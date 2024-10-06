@@ -53,10 +53,10 @@ const ConfettiImage = styled.Image`
 `
 
 const MainText = styled.Text`
-  font-size:22px;
+  font-size:23px;
   text-align:center;
   color: #898989;
-  line-height:33px;
+  line-height:35px;
 `
 
 const StartButton = styled.TouchableOpacity`

@@ -2,21 +2,24 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import styled from 'styled-components/native'
 
-const SignUpStep = () => {
+const SignUpStep = ({step, setStep}) => {
   const steps = [1, 2, 3, 4]
 
   return (
     <StepContents>
-      {steps.map(step => {
+      {steps.map(el => {
         return(
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-            <StepBox>
-              <StepNum>
-                {step}
+            
+            <StepBox style={{backgroundColor:el===step ? "#FB5E3D" : "#f4f4f4"}}>
+              <StepNum style={{color:el===step? "white" : "#898989"}}>
+                {el}
               </StepNum>
             </StepBox>
+            
+            
             {
-              step!==4 ? <Dotes>{"-"}{"-"}</Dotes> : <></>
+              el!==4 ? <Dotes>{"-"}{"-"}</Dotes> : <></>
             }
             
             
@@ -35,11 +38,13 @@ export default SignUpStep
 
 const StepContents = styled.View`
   flex-direction:row;
+  margin-top:180px;
+  margin-bottom:40px;
 `
 
 const StepBox = styled.View`
-  width:40px;
-  height:40px;
+  width:30px;
+  height:30px;
   background-color:#F4F4F4;
   border-radius:10px;
   justify-content:center;
@@ -48,8 +53,8 @@ const StepBox = styled.View`
 
 const StepNum = styled.Text`
   color:#898989;
-  font-weight:900;
-  font-size:20px;
+  font-weight:700;
+  font-size:17px;
 `
 
 const Dotes = styled.Text`
