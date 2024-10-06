@@ -19,7 +19,8 @@
     "react-native-screens": "^3.34.0",
     "styled-component": "^2.8.0",
     "styled-components": "^6.1.13",
-    "watchman": "^1.0.0"
+    "watchman": "^1.0.0",
+    "expo-splash-screen": "~0.27.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
