@@ -1,37 +1,37 @@
 import React from 'react';
 import { SafeAreaView, Text } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import styled from 'styled-components/native';
+import { styled } from 'styled-components/native';
 
-export default function AppTopBar() {
+export default function AppTopBar({title, icon}) {
   return (
-    <SafeAreaContainer>
-      <HeaderContainer>
-        <IconGroup>
-          <IconButton name="arrow-back" />
-        </IconGroup>
-        <Title>알림</Title>
-      </HeaderContainer>
-    </SafeAreaContainer>
+        <SafeAreaContainer>
+        <HeaderContainer>
+          <IconGroup>
+            <IconButton name={icon} />
+          </IconGroup>
+          <Title>{title}</Title>
+        </HeaderContainer>
+      </SafeAreaContainer>
   );
 }
 
 const IconButton = (props) => (
   <IconWrapper>
-    <Ionicons name={props.name} size={22} color="black" />
-  </IconWrapper>
+  <Ionicons name={props.name} size={22} color='black' />
+</IconWrapper>
 );
 
 const SafeAreaContainer = styled(SafeAreaView)`
-  background-color: #fff;
+  background-color: ${(props) => props.theme.background};
 `;
 
 const HeaderContainer = styled.View`
-  padding-bottom: 5px;  /* 기존 10px에서 줄임 */
+  padding-bottom: 5px;
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 20px;
-  background-color: #fff;
+  background-color: ${(props) => props.theme.background};
   flex-direction: row;
   justify-content: flex-start;
   align-items: baseline;
@@ -43,6 +43,7 @@ const Title = styled.Text`
   font-size: 22px;
   font-weight: bold;
   padding-bottom: 5px;
+  color: ${(props) => props.theme.text};
 `;
 
 const IconGroup = styled.View`

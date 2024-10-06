@@ -12,7 +12,7 @@ const notifications = [
 export default function Notification() {
   return (
     <Container>
-      <AppTopBar />
+      <AppTopBar title="알림" icon="arrow-back"/>
       <NotiList
         data={notifications}
         keyExtractor={(item) => item.id}
@@ -28,7 +28,6 @@ export default function Notification() {
   );
 }
 
-// Styled components using color
 const Container = styled.View`
   flex: 1;
   background-color: ${(props) => props.theme.background};

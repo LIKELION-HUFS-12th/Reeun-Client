@@ -4,4 +4,5 @@ export const color = {
     itemBackgroundHigh: '#FB5E3D',
     main: '#FB5E3D',
     text: '#343434',
+    iconColor: 'black',
 };
