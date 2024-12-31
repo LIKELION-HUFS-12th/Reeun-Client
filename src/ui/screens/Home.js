@@ -7,18 +7,18 @@ export default function HomeScreen() {
       
       <View style={styles.logoContainer}>
         <Image 
-          source={require('../../assets/kor_logo.png')}
+          source={require('../../../assets/kor_logo.png')}
           style={styles.logo}
         />
         <Image 
-          source={require('../../assets/logo.png')}
+          source={require('../../../assets/logo.png')}
           style={styles.logo}
         />
       </View>
 
       <View style={styles.noticeBanner}>
         <Image 
-          source={require('../../assets/notice.png')}
+          source={require('../../../assets/notice.png')}
           style={styles.noticeIcon}
         />
         <Text style={styles.noticeText}>
@@ -35,7 +35,7 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.schoolCommunity}>
         <View style={styles.schoolCard}>
           <Image 
-            source={require('../../assets/school.png')}
+            source={require('../../../assets/school.png')}
             style={styles.schoolIcon}
           />
           <Text style={styles.schoolName}>리운초</Text>
