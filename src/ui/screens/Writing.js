@@ -17,7 +17,7 @@ export default function WritingScreen({ navigation }) {
       <Container>
         <Header>
           <CloseButton onPress={() => navigation.goBack()}>
-            <Image source={require('../../assets/close.png')} style={{ width: 20, height: 20 }} />
+            <Image source={require('../../../assets/close.png')} style={{ width: 20, height: 20 }} />
           </CloseButton>
           <TitleText>글쓰기</TitleText>
           <DoneButton onPress={() => console.log('게시')} activeOpacity={0.7}>

@@ -11,12 +11,12 @@ export default function BoardScreen({ navigation }) {
     <Container>
       <Header>
         <BackButton onPress={() => navigation.goBack()}>
-          <BackIcon source={require('../../assets/back.png')} />
+          <BackIcon source={require('../../../assets/back.png')} />
         </BackButton>
         <SchoolName>{schoolName}</SchoolName>
         <BoldText>초등학교 전체 커뮤니티 ({year})</BoldText>
         <MenuButton>
-          <MenuIcon source={require('../../assets/menu.png')} />
+          <MenuIcon source={require('../../../assets/menu.png')} />
         </MenuButton>
       </Header>
 
@@ -44,7 +44,7 @@ export default function BoardScreen({ navigation }) {
 
       <WriteButton onPress={() => navigation.navigate('WriteScreen')}>
         <WriteButtonText>
-          글쓰기  <WritingIcon source={require('../../assets/writing.png')} />
+          글쓰기  <WritingIcon source={require('../../../assets/writing.png')} />
         </WriteButtonText>
       </WriteButton>
     </Container>
