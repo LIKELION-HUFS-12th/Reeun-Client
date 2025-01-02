@@ -1,27 +1,18 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Signup_home from './src/screens/Signup_home';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Signup_Complete from './src/screens/Signup_Complete';
-import Signup_Contents from './src/screens/Signup_Contents';
-import Login_Home from './src/screens/Login_Home';
-import Login_Contents from './src/screens/Login_Contents';
-import MyPage from './src/screens/MyPage';
-import ViewPost from './src/screens/ViewPost';
+import HomeScreen from './src/ui/screens/Home';
+import { ThemeProvider } from 'styled-components/native'; // Theme Provider 사용해서 색상 전역으로 사용!!
+import { color } from './src/ui/styles/Color';
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <View>
-        {/* <Signup_home/> */}
-        {/* <Signup_Complete/> */}
-        {/* <Signup_Contents/> */}
-        {/* <Login_Home/> */}
-        {/* <Login_Contents/> */}
-        <MyPage/>
-        {/* <ViewPost/> */}
+    <ThemeProvider theme={color}>
+      <View style={styles.container}>
+        <HomeScreen />
+        <StatusBar style="auto" />
       </View>
-    </SafeAreaProvider>
+    </ThemeProvider>
   );
 }
 
