@@ -12,26 +12,26 @@ const MyPage = () => {
       
       <MyPageHeader>
         <TouchableOpacity>
-          <Image source={require("../../assets/arrow_back_black.png")}/>
+          <Image source={require("../../../assets/arrow_back_black.png")}/>
         </TouchableOpacity>
         <MyPageText>마이페이지</MyPageText>
       </MyPageHeader>
       <EditButton>
-          <Image source={require("../../assets/edit_icon.png")}/>
+          <Image source={require("../../../assets/edit_icon.png")}/>
           <Text>프로필 편집</Text>
       </EditButton>
       <ProfileContents>
-        <ProfileImg source={require('../../assets/profile_img.png')} />
+        <ProfileImg source={require('../../../assets/profile_img.png')} />
         <UserName>김멋사</UserName>
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>리운</Text>초등학교{"(2008)"}</UserSchool>
       </ProfileContents>
       <ViewMyActivity>
         <MyPostButton>
-          <Image source={require("../../assets/post_icon.png")}/>
+          <Image source={require("../../../assets/post_icon.png")}/>
           <Text style={{color:"#757373"}}>내가 쓴 게시물</Text>
         </MyPostButton>
         <MyCommentButton>
-          <Image source={require("../../assets/comment_icon.png")} />
+          <Image source={require("../../../assets/comment_icon.png")} />
           <Text style={{color:"#757373"}}>내가 쓴 댓글</Text>
         </MyCommentButton>
       </ViewMyActivity>

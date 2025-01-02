@@ -5,4 +5,5 @@ export const color = {
     main: '#FB5E3D',
     text: '#343434',
     iconColor: 'black',
+    mainPoint: '#FB5E3D'
 };
