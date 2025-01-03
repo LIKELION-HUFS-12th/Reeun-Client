@@ -1,10 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
-import logo from '../../assets/logo.png'
+import logo from '../../../assets/logo.png'
+import axios from 'axios';
 
 const Login_Contents = () => {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogIn = async () => {
+    try {
+      const response = await axios.post("https://reeun.store/member/login/",{
+      username:id,
+      password:password
+    });
+      console.log(response.data)
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+
+  const handleId = (e) => {
+    setId(e.nativeEvent.text);
+    console.log(e.nativeEvent.text)
+  }
+
+  const handlePassword = (e) => {
+    setPassword(e.nativeEvent.text);
+    console.log(e.nativeEvent.text)
+  }
+
   return (
     <SafeAreaView>
       <View style={{margin:"auto"}}>
@@ -14,16 +41,22 @@ const Login_Contents = () => {
           <InputBody>
             <LoginInput
               placeholder="아이디를 입력하세요"
-              placeholderTextColor="#898989">
+              placeholderTextColor="#898989"
+              value={id}
+              onChange={(e) => handleId(e)}
+              >
             </LoginInput>
             <LoginInput
               placeholder="비밀번호를 입력하세요"
-              placeholderTextColor="#898989">
+              placeholderTextColor="#898989"
+              value={password}
+              onChange={(e) => handlePassword(e)}
+              >
             </LoginInput>
           </InputBody>
         </LoginBody>
         <View style={{justifyContent:'center', alignItems:'center', marginTop:150}}>
-          <LoginButton>
+          <LoginButton onPress={handleLogIn}>
             <ButtonText>로그인하기</ButtonText>
           </LoginButton>
         </View>

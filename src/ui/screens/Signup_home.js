@@ -2,9 +2,10 @@ import React from 'react'
 import { Button, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
-import logo from '../../assets/logo.png'
+import logo from '../../../assets/logo.png'
 
 const Signup_home = ({ver}) => {
+
 
   return (
     <SafeAreaView>
@@ -19,7 +20,7 @@ const Signup_home = ({ver}) => {
         <View style={{justifyContent:'center', alignItems:'center', gap:20}}>
           <TouchableOpacity style={{backgroundColor:'#f5f5f5', width:250, height: 50, justifyContent:'center', borderRadius:10  }}>
             <View style={{flexDirection:'row',justifyContent:'center', alignItems:'center', gap:15}}>
-              <Image source={require('../../assets/id_icon.png')} style={{width:26, height:26}}></Image>
+              <Image source={require('../../../assets/id_icon.png')} style={{width:26, height:26}}></Image>
               <Text style={{textAlign:'center', fontSize:16, fontWeight:500}}>
                 {ver==="login" ? "아이디로 로그인하기" : "아이디 입력 후 시작하기"}
               </Text>
@@ -49,8 +50,8 @@ const LogoImg = styled.Image`
 const Contents = styled.View`
   marginTop:150px;
   marginBottom:225px;
-  marginLeft:40px;
-  gap:20
+  marginLeft:-20px;
+  gap:20;
 `
 
 const SignupStart = styled.View`
