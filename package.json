@@ -9,17 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@react-navigation/native": "^7.0.14",
-    "@react-navigation/native-stack": "^6.11.0",
-    "@react-navigation/stack": "^7.1.1",
-    "axios": "^1.7.9",
-=======
     "@react-navigation/bottom-tabs": "6.4.0",
     "@react-navigation/native": "6.1.6",
     "@react-navigation/native-stack": "6.11.0",
     "@react-navigation/stack": "6.4.0",
->>>>>>> 8614643e1cf28026488d50812a8cae4c1bc44677
     "expo": "^52.0.23",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",

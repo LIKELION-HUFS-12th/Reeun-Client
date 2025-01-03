@@ -10,10 +10,7 @@ import ChatListScreen from './src/ui/screens/ChatListScreen';
 import Notification from './src/ui/screens/Notification';
 import MyPage from './src/ui/screens/MyPage';
 import { color } from './src/ui/styles/Color';
-import Login_Home from './src/ui/screens/Login_Home';
-import Signup_home from './src/ui/screens/Signup_home';
-import Signup_Contents from './src/ui/screens/Signup_Contents';
-import Login_Contents from './src/ui/screens/Login_Contents';
+
 
 const Tab = createBottomTabNavigator();
 
