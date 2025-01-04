@@ -4,10 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import logo from '../../../assets/logo.png'
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserStore } from '../../logic/store/user'
 
-const Login_Contents = () => {
+
+const Login_Contents = ({navigation}) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const {user, setUser} = useUserStore();
 
   const handleLogIn = async () => {
     try {
@@ -15,7 +19,13 @@ const Login_Contents = () => {
       username:id,
       password:password
     });
-      console.log(response.data)
+      const data = response.data.data;
+      const accessToken = data.access;
+      AsyncStorage.setItem('accessToken', accessToken);
+      AsyncStorage.setItem('userData', JSON.stringify(data.user));
+      setUser(accessToken);
+      console.log(user);
+      navigation.navigate('Tabs')
     } catch (error) {
       console.log(error);
     }
@@ -33,7 +43,8 @@ const Login_Contents = () => {
   }
 
   return (
-    <SafeAreaView>
+    <>
+    <SafeAreaView style={{backgroundColor:'white'}}>
       <View style={{margin:"auto"}}>
         <LogoImg source={logo}></LogoImg>
         <LoginBody>
@@ -50,6 +61,7 @@ const Login_Contents = () => {
               placeholder="비밀번호를 입력하세요"
               placeholderTextColor="#898989"
               value={password}
+              secureTextEntry={true} 
               onChange={(e) => handlePassword(e)}
               >
             </LoginInput>
@@ -63,6 +75,7 @@ const Login_Contents = () => {
         
       </View>
     </SafeAreaView>
+    </>
   )
 }
 
@@ -108,6 +121,7 @@ const LoginButton = styled.TouchableOpacity`
   border-radius:20px;
   justify-content:center;
   align-items:center;
+  margin-top:80px;
 `
 
 const ButtonText = styled.Text`

@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import logo from '../../../assets/logo.png'
 
-const Signup_home = ({ver}) => {
+const Signup_home = ({navigation, ver}) => {
+
+  useEffect(() => {
+    
+  }, [])
+  
 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:"white"}}>
       <Contents>
         <LogoImg source={logo}></LogoImg>
         <Text style={{fontSize:24, color:"#777777", lineHeight:33, fontWeight:200}}>
@@ -18,7 +23,8 @@ const Signup_home = ({ver}) => {
       </Contents>
       <SignupStart>
         <View style={{justifyContent:'center', alignItems:'center', gap:20}}>
-          <TouchableOpacity style={{backgroundColor:'#f5f5f5', width:250, height: 50, justifyContent:'center', borderRadius:10  }}>
+          <TouchableOpacity style={{backgroundColor:'#f5f5f5', width:250, height: 50, justifyContent:'center', borderRadius:10}}
+            onPress={() => {navigation.navigate(ver==='login' ? 'LoginContents': "SignUpContents")}}>
             <View style={{flexDirection:'row',justifyContent:'center', alignItems:'center', gap:15}}>
               <Image source={require('../../../assets/id_icon.png')} style={{width:26, height:26}}></Image>
               <Text style={{textAlign:'center', fontSize:16, fontWeight:500}}>
@@ -28,7 +34,7 @@ const Signup_home = ({ver}) => {
           </TouchableOpacity>
           <View style={{flexDirection:'row', gap:5}}>
             <Text style={{color:"#898989", fontSize:14}}>{ver==="login" ? "회원이 아니신가요?" : "이미 회원이신가요?"}</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {navigation.navigate(ver==='login' ? 'SignUp' : 'Login')}} >
               <Text style={{textDecorationLine:"underline", fontSize:15}}>{ver==="login" ? "회원가입하기" : "로그인하기"}</Text>
             </TouchableOpacity>
           </View>
@@ -44,17 +50,18 @@ export default Signup_home
 const LogoImg = styled.Image`
   width:100px;
   height:100px;
-
+  
 `
 
 const Contents = styled.View`
   marginTop:150px;
   marginBottom:225px;
-  marginLeft:-20px;
+  marginLeft:40px;
   gap:20;
 `
 
 const SignupStart = styled.View`
+  margin-bottom:60px;
 `
 
 const StartButton = styled.TouchableOpacity`

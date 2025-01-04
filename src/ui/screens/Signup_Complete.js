@@ -3,7 +3,7 @@ import { Image, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 
-const Signup_Complete = () => {
+const Signup_Complete = ({navigation}) => {
   return (
     <SafeAreaView style={{justifyContent:'center', alignItems:'center', gap:'150'}}>
       <Contents>
@@ -11,12 +11,12 @@ const Signup_Complete = () => {
           <TitleText>환영해요!</TitleText>
           <View>
             <Circle></Circle>
-            <ConfettiImage source={require("../../assets/confetti_icon.png")}/>
+            <ConfettiImage source={require("../../../assets/confetti_icon.png")}/>
           </View>
         </View>
         <MainText>리운과 함께{"\n"}그리운 그때로 돌아가봐요</MainText>
       </Contents>
-      <StartButton>
+      <StartButton onPress={() => navigation.navigate('Tabs')}>
         <StartText>시작하기</StartText>
       </StartButton>
     </SafeAreaView>

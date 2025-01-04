@@ -1,14 +1,93 @@
-import React from 'react'
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React, { useEffect, useState } from 'react'
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import ClassEl from '../components/ClassEl'
+import { useUserInfoStore, useUserStore } from '../../logic/store/user'
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const MyPage = () => {
+const MyPage = ({navigation}) => {
   const class_num = [1, "", 3]
+  const {user, setUser} = useUserStore();
+  const {userInfo, setUserInfo} = useUserInfoStore();
+
+  
+
+  const handleLogOut = async() => {
+    try {
+      const response = await axios.post('https://reeun.store/member/logout/',{}, {
+        headers:{
+          Authorization : `Bearer ${user}`
+        }
+      
+      })
+      console.log("성공!")
+      setUser(false);
+    } catch (error) {
+      console.log(error);
+      console.log("에러!!");
+    }
+  }
+
+  const handleDelete = async() => {
+    try {
+      const response = await axios.post('https://reeun.store/member/delete/',{
+        password:"password123!"
+      }, {
+        headers:{
+          Authorization : `Bearer ${user}`
+        }
+      
+      })
+      console.log("성공!")
+      setUser(false);
+    } catch (error) {
+      console.log(error);
+      console.log("에러!!");
+    }
+  }
+
+  const goToLogoutAlert = () => {
+    Alert.alert("로그아웃 하시겠어요?", "", [
+      {
+        //style을 통해 알러트가 닫힘
+        style: "cancel",
+        text: "아니요"
+      },
+      {
+        text: "네",
+        //버튼을 누르면 동작할 로직을 직접 적어줄 수도 있음
+        onPress: () => handleLogOut(),
+      }
+      //버튼관리
+    ])
+  }
+
+  const goToDeleteAlert = () => {
+    Alert.alert("탈퇴하시겠어요?", "모든 정보가 사라집니다", [
+      {
+        //style을 통해 알러트가 닫힘
+        style: "cancel",
+        text: "아니요"
+      },
+      {
+        text: "네",
+        //버튼을 누르면 동작할 로직을 직접 적어줄 수도 있음
+        onPress: () => handleLogOut(),
+      }
+      //버튼관리
+    ])
+  }
+  
+  // useEffect(() => {
+  //   getUserInfo();
+  //   console.log(userInfo);
+  // }, [])
+  
 
   return (
-    <SafeAreaView style={{maxWidth:"350px"}}>
+    <SafeAreaView style={{maxWidth:"350px", backgroundColor:"white", position:"relative"}}>
       
       <MyPageHeader>
         <TouchableOpacity>
@@ -22,11 +101,14 @@ const MyPage = () => {
       </EditButton>
       <ProfileContents>
         <ProfileImg source={require('../../../assets/profile_img.png')} />
-        <UserName>김멋사</UserName>
-        <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>리운</Text>초등학교{"(2008)"}</UserSchool>
+        <UserName>{userInfo.username}</UserName>
+        <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
+          {userInfo.school ? userInfo.school
+          :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
+          </UserSchool>
       </ProfileContents>
       <ViewMyActivity>
-        <MyPostButton>
+        <MyPostButton >
           <Image source={require("../../../assets/post_icon.png")}/>
           <Text style={{color:"#757373"}}>내가 쓴 게시물</Text>
         </MyPostButton>
@@ -52,9 +134,18 @@ const MyPage = () => {
           </ScrollView>
         
       </ViewMyClass>
-      <CancleButton>
-        <CancleText>탈퇴하기</CancleText>
+      <View style={{ marginTop:user?'50':'90'}}>
+      {user ? <LogOutButton onPress={goToLogoutAlert}>
+        <LogOutText>로그아웃</LogOutText>
+      </LogOutButton>
+      :
+      <></>}
+      
+      <CancleButton onPress={() => navigation.navigate('Login')}>
+        <CancleText>{user ? "탈퇴하기" : "로그인하기"}</CancleText>
       </CancleButton>
+      </View>
+      
     </SafeAreaView>
   )
 }
@@ -153,9 +244,18 @@ const ClassList = styled.View`
   overflow-x:scroll;
 `
 
+const LogOutButton = styled.TouchableOpacity`
+  margin-left:30px;
+  padding:10px 0;
+`
+
+const LogOutText = styled.Text`
+  font-size:20px;
+`
+
 const CancleButton = styled.TouchableOpacity`
   margin-left:30px;
-  margin-top:140px;
+  
 `
 
 const CancleText = styled.Text`

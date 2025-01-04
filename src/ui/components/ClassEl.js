@@ -33,6 +33,7 @@ const GradeBody = styled.View`
   display:flex;
   justify-content:center;
   align-items:center;
+  margin-bottom:10px;
 `
 
 const GradeText = styled.Text`

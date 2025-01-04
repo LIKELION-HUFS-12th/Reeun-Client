@@ -3,12 +3,13 @@ import { View } from 'react-native'
 import styled from 'styled-components/native'
 import axios from 'axios';
 
-const SignUpMain = ({step, setStep}) => {
+const SignUpMain = ({step, setStep, setIsComplete}) => {
   const questionEl = ["아이디", "비밀번호", "닉네임", ["학교", "입학년도"]]
   const questionList = ["아이디를", "비밀번호를", "닉네임을", ["출신학교를", "입학년도를"]]
   const placeholderText = step === 4 ? `${questionList[3][0]} 입력하세요`:`${questionList[step-1]} 입력하세요`
   const [userInfo, setUserInfo] = useState([]);
   const [presentValue, setPresentValue] = useState("");
+
   
   const handleStep = () => {
     setStep(prev => prev + 1)
@@ -36,6 +37,7 @@ const SignUpMain = ({step, setStep}) => {
         password2:userInfo[2]
       })
       console.log(response.data.user);
+      setIsComplete(true);
     } catch (error) {
       console.log(error)
     }
@@ -62,10 +64,14 @@ const SignUpMain = ({step, setStep}) => {
   }
 
   return (
+    <>
+    
     <MainContents>
       <MainText>당신의 정보를 입력해주세요</MainText>
       {handleQuestion()}
     </MainContents>
+    
+    </>
   )
 }
 
@@ -108,7 +114,7 @@ const NextStepButton = styled.TouchableOpacity`
   border-radius:20px;
   justify-content:center;
   align-items:center;
-
+  margin-bottom:60px;
 `
 
 const NextText = styled.Text`
