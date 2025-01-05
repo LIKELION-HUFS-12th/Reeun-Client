@@ -12,7 +12,9 @@ const notifications = [
 export default function Notification() {
   return (
     <Container>
-      <AppTopBar title="알림" icon="arrow-back"/>
+      <Header>
+        <HeaderTitle>알림</HeaderTitle>
+      </Header>
       <NotiList
         data={notifications}
         keyExtractor={(item) => item.id}
@@ -34,8 +36,21 @@ const Container = styled.View`
   width: 100%;
 `;
 
+const Header = styled.View`
+  padding: 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #e0e0e0;
+  margin-top: 50px;
+`;
+
+const HeaderTitle = styled.Text`
+  font-size: 22px;
+  font-weight: bold;
+  color: ${(props) => props.theme.text};
+`;
+
 const NotiList = styled(FlatList)`
-  padding: 20px 20px;
+  padding: 20px;
   width: 100%;
 `;
 
