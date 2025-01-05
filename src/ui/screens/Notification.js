@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import { FlatList } from 'react-native';
-import AppTopBar from '../components/AppTopBar';
+import { FlatList, TouchableOpacity } from 'react-native';
 
-const notifications = [
-  { id: '1', community:'[리운초등학교(2008)]', title:'새 게시글이 있습니다.', message: '얘들아 나 김멋사인데 잘 지내니?...', created_at: '2024-09-04 11:25' },
-  { id: '2', community:'[리운초등학교(2008)]', title:'새 게시글이 있습니다.', message: '와대박 다들 그 소식 들었니 다름이 아니라 내가..', created_at: '2024-09-04 11:25' },
-  { id: '3', community:'[6학년 5반]', title:'새 댓글이 있습니다.', message: '웬일이야 시간 너무빠른거 아니니', created_at: '2024-09-04 11:25' },
+const initialNotifications = [
+  { id: '1', community: '[리운초등학교(2008)]', title: '새 게시글이 있습니다.', message: '얘들아 나 김멋사인데 잘 지내니?...', created_at: '2024-09-04 11:25', isRead: false },
+  { id: '2', community: '[리운초등학교(2008)]', title: '새 게시글이 있습니다.', message: '와대박 다들 그 소식 들었니 다름이 아니라 내가..', created_at: '2024-09-04 11:25', isRead: true },
+  { id: '3', community: '[6학년 5반]', title: '새 댓글이 있습니다.', message: '웬일이야 시간 너무빠른거 아니니', created_at: '2024-09-04 11:25', isRead: false },
 ];
 
 export default function Notification() {
+  const [notifications, setNotifications] = useState(initialNotifications);
+
+  const toggleReadStatus = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notif) =>
+        notif.id === id ? { ...notif, isRead: !notif.isRead } : notif
+      )
+    );
+  };
+
   return (
     <Container>
       <Header>
@@ -19,11 +28,13 @@ export default function Notification() {
         data={notifications}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <NotiItem>
-            <NotiTitle>{item.community} {item.title}</NotiTitle>
-            <NotiText>{item.message}</NotiText>
-            <NotiTime>{item.created_at}</NotiTime>
-          </NotiItem>
+          <TouchableOpacity onPress={() => toggleReadStatus(item.id)}>
+            <NotiItem isRead={item.isRead}>
+              <NotiTitle isRead={item.isRead}>{item.community} {item.title}</NotiTitle>
+              <NotiText isRead={item.isRead}>{item.message}</NotiText>
+              <NotiTime>{item.created_at}</NotiTime>
+            </NotiItem>
+          </TouchableOpacity>
         )}
       />
     </Container>
@@ -55,11 +66,11 @@ const NotiList = styled(FlatList)`
 `;
 
 const NotiItem = styled.View`
-  background-color: ${(props) => props.theme.itemBackground};
+  background-color: ${(props) =>
+    props.isRead ? '#f5f5f5' : props.theme.itemBackground};
   padding: 15px;
   margin-bottom: 18px;
   border-radius: 10px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
   flex-direction: column;
   justify-content: space-between;
   gap: 5px;
@@ -68,13 +79,13 @@ const NotiItem = styled.View`
 
 const NotiTitle = styled.Text`
   font-size: 18px;
-  font-weight: 600;
-  color: ${(props) => props.theme.text};
+  font-weight: ${(props) => (props.isRead ? '400' : '600')};
+  color: ${(props) => (props.isRead ? props.theme.text : '#FF0000')}; /* 읽지 않은 경우 빨간색 */
 `;
 
 const NotiText = styled.Text`
   font-size: 16px;
-  color: ${(props) => props.theme.text};
+  color: ${(props) => (props.isRead ? props.theme.text : '#FF0000')}; /* 읽지 않은 경우 빨간색 */
 `;
 
 const NotiTime = styled.Text`
