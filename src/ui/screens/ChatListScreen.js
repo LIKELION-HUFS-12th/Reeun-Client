@@ -1,9 +1,8 @@
-// 채팅방 목록
 import React from 'react';
 import styled from 'styled-components/native';
-import { Dimensions } from 'react-native';
+import { Dimensions, TouchableOpacity } from 'react-native';
 
-export default function ChatListScreen() {
+export default function ChatListScreen({ navigation }) {
   const chatRooms = [
     { id: '1', title: '나누군지아는사람?', description: '굿' },
     { id: '2', title: '해커스 토플 인터미디엇 5권', description: '대화를 시작해보세요.' },
@@ -16,13 +15,18 @@ export default function ChatListScreen() {
       </Header>
       <Content>
         {chatRooms.map((room) => (
-          <ChatRoom key={room.id}>
-            <Avatar />
-            <ChatInfo>
-              <ChatTitle>{room.title}</ChatTitle>
-              <ChatDescription>{room.description}</ChatDescription>
-            </ChatInfo>
-          </ChatRoom>
+          <TouchableOpacity
+            key={room.id}
+            onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
+          >
+            <ChatRoom>
+              <Avatar />
+              <ChatInfo>
+                <ChatTitle>{room.title}</ChatTitle>
+                <ChatDescription>{room.description}</ChatDescription>
+              </ChatInfo>
+            </ChatRoom>
+          </TouchableOpacity>
         ))}
       </Content>
     </Screen>
