@@ -1,3 +1,4 @@
+// 채팅 입력 컴포넌트
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
@@ -56,7 +57,7 @@ const SendButton = styled(TouchableOpacity)`
   margin-left: 8px;
   padding: 12px 16px;
   border-radius: 20px;
-  background-color: ${(props) => props.theme.mineBackground || '#DCF8C6'};
+  background-color: ${(props) => `${props.theme.mainPoint }AF`};
 `;
 
 const SendButtonText = styled.Text`

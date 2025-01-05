@@ -80,7 +80,7 @@ const Content = styled.View`
 const ChatInputContainer = styled.View`
   height: 100px;
   width: 100%;
-  border-top-width: 1px;
+  border-top-width: 0.1px;
   border-top-color: #e0e0e0;
   background-color: ${(props) => props.theme.background || '#FFFFFF'};
 `;

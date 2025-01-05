@@ -1,4 +1,4 @@
-// src/ui/components/ChatList.js
+// 채팅방 내 대화목록
 import React from 'react';
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
@@ -23,14 +23,14 @@ export default function ChatList({ messages }) {
 
 const ChatListContainer = styled.View`
   flex: 1;
-  padding: 16px;
+  padding: 18px;
 `;
 
 const ChatItem = styled.View`
-  background-color: ${(props) => (props.isMine ? props.theme.mineBackground || '#DCF8C6' : props.theme.otherBackground || '#FFFFFF')};
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  border-radius: 8px;
+  background-color: ${(props) => (props.isMine ? props.theme.mineBackground || '#F4F4F4' : props.theme.otherBackground || '#FFFFFF')};
+  padding: 12px 18px;
+  margin: 15px 5px 0px 5px;
+  border-radius: 20px;
   align-self: ${(props) => (props.isMine ? 'flex-end' : 'flex-start')};
   max-width: 70%;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);

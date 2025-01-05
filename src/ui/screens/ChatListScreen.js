@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { Dimensions, TouchableOpacity, Image } from 'react-native';
 
 export default function ChatListScreen({ navigation }) {
   const chatRooms = [
@@ -20,7 +20,7 @@ export default function ChatListScreen({ navigation }) {
             onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
           >
             <ChatRoom>
-              <Avatar />
+              <Avatar source={require('../../../assets/comment_profile.png')} />
               <ChatInfo>
                 <ChatTitle>{room.title}</ChatTitle>
                 <ChatDescription>{room.description}</ChatDescription>
@@ -33,10 +33,8 @@ export default function ChatListScreen({ navigation }) {
   );
 }
 
-// Get screen dimensions
 const { width } = Dimensions.get('window');
 
-// Styled Components
 const Screen = styled.View`
   flex: 1;
   background-color: #ffffff;
@@ -70,11 +68,10 @@ const ChatRoom = styled.View`
   margin: 0 auto; /* 가운데 정렬 */
 `;
 
-const Avatar = styled.View`
+const Avatar = styled.Image`
   width: 50px;
   height: 50px;
   border-radius: 25px;
-  background-color: #e4e4e4;
   margin-right: 15px;
 `;
 
