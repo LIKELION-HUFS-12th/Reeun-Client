@@ -44,9 +44,9 @@ const Header = styled.View`
 `;
 
 const HeaderTitle = styled.Text`
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
-  color: ${(props) => props.theme.text};
+  color: #000000;
 `;
 
 const NotiList = styled(FlatList)`
