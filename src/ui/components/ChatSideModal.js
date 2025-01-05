@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
-import { Animated, TouchableWithoutFeedback } from 'react-native';
+import { Animated, TouchableWithoutFeedback, Image } from 'react-native';
 
 export default function ChatSideModal({ isVisible, onClose }) {
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -21,8 +21,7 @@ export default function ChatSideModal({ isVisible, onClose }) {
     }
   }, [isVisible, slideAnim]);
 
-    const handleGoToPost = () => {
-    // 여기에 게시글 이동 로직 추가 (예: 네비게이션 함수 호출)
+  const handleGoToPost = () => {
     console.log("게시글로 이동!");
   };
 
@@ -50,11 +49,15 @@ export default function ChatSideModal({ isVisible, onClose }) {
               <ParticipantSection>
                 <SectionTitle>참여자 2</SectionTitle>
                 <Participant>
-                  <ParticipantCircle />
+                  <ParticipantImage
+                    source={require('../../../assets/owner_profile.png')}
+                  />
                   <ParticipantText>나 (익명)</ParticipantText>
                 </Participant>
                 <Participant>
-                  <ParticipantCircle />
+                  <ParticipantImage
+                    source={require('../../../assets/comment_profile.png')}
+                  />
                   <ParticipantText>익명 (글쓴이)</ParticipantText>
                 </Participant>
               </ParticipantSection>
@@ -149,7 +152,7 @@ const SectionTitle = styled.Text`
   color: ${(props) => props.theme.text || '#000000'};
   font-size: 15px;
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 20px;
 `;
 
 const Participant = styled.View`
@@ -158,11 +161,10 @@ const Participant = styled.View`
   margin-bottom: 8px;
 `;
 
-const ParticipantCircle = styled.View`
-  width: 40px;
-  height: 40px;
+const ParticipantImage = styled.Image`
+  width: 38px;
+  height: 38px;
   border-radius: 20px;
-  background-color: #e4e4e4;
   margin-right: 12px;
 `;
 
