@@ -5,9 +5,9 @@ import styled from 'styled-components/native';
 export default function WritingScreen({ navigation }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);  // 익명 체크 상태 추가
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const handleToggleAnonymous = () => setIsAnonymous((prev) => !prev);  // 체크박스 토글 함수
+  const handleToggleAnonymous = () => setIsAnonymous((prev) => !prev);
 
   return (
     <KeyboardAvoidingView
@@ -17,7 +17,7 @@ export default function WritingScreen({ navigation }) {
       <Container>
         <Header>
           <CloseButton onPress={() => navigation.goBack()}>
-            <Image source={require('../../../assets/close.png')} style={{ width: 20, height: 20 }} />
+            <Image source={require('../../../assets/close.png')} style={{ width: 15, height: 15 }} />
           </CloseButton>
           <TitleText>글쓰기</TitleText>
           <DoneButton onPress={() => console.log('게시')} activeOpacity={0.7}>
@@ -26,16 +26,14 @@ export default function WritingScreen({ navigation }) {
         </Header>
 
         <InputContainer>
-          <LabelText>제목</LabelText>
           <Input
-            placeholder="제목을 입력해주세요"
+            placeholder="제목"
             value={title}
             onChangeText={setTitle}
           />
-          <Line />
 
           <ContentInput
-            placeholder="내용을"
+            placeholder="내용"
             multiline
             value={content}
             onChangeText={setContent}
@@ -45,7 +43,7 @@ export default function WritingScreen({ navigation }) {
         <AnonymousSection>
           <CheckBoxButton onPress={handleToggleAnonymous}>
             <CheckBoxIcon isChecked={isAnonymous} />
-            <Text style={{ fontSize: 16, color: '#6c6c6c' }}>익명 </Text>
+            <Text style={{ fontSize: 13, color: '#6c6c6c' }}>익명 </Text>
           </CheckBoxButton>
         </AnonymousSection>
 
@@ -71,7 +69,7 @@ const Header = styled.View`
 const CloseButton = styled.TouchableOpacity``;
 
 const TitleText = styled.Text`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
   color: ${(props) => props.theme.text};
 `;
@@ -79,64 +77,50 @@ const TitleText = styled.Text`
 const DoneButton = styled.TouchableOpacity``;
 
 const DoneText = styled.Text`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: bold;
-  color: ${(props) => props.theme.main};
+  color: #6c6c6c;
 `;
 
 const InputContainer = styled.View`
   margin-bottom: 30px;
 `;
 
-const LabelText = styled.Text`
-  font-size: 16px;
-  color: ${(props) => props.theme.text};
-  margin-bottom: 8px;
-`;
-
 const Input = styled.TextInput`
   height: 40px;
+  padding: 10px;
   border-bottom-width: 1px;
   border-bottom-color: ${(props) => props.theme.main};
   margin-bottom: 20px;
-  font-size: 16px;
+  font-size: 17px;
   color: ${(props) => props.theme.text};
-`;
-
-const Line = styled.View`
-  height: 1px;
-  background-color: ${(props) => props.theme.main};
-  margin-bottom: 10px;
 `;
 
 const ContentInput = styled.TextInput`
-  height: 120px;
-  border-width: 1px;
-  border-color: ${(props) => props.theme.main};
+  height: 530px;
   padding: 10px;
-  font-size: 16px;
+  font-size: 15px;
   color: ${(props) => props.theme.text};
-  text-align-vertical: top;
 `;
 
 const AnonymousSection = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
   margin-bottom: 30px;
 `;
 
 const CheckBoxButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  margin-right: 10px;
 `;
 
 const CheckBoxIcon = styled.View`
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 3px;
   border-width: 2px;
   border-color: #6c6c6c;
   background-color: ${(props) => (props.isChecked ? props.theme.main : 'transparent')};
-  margin-right: 10px;
+  margin-right: 5px;
 `;
