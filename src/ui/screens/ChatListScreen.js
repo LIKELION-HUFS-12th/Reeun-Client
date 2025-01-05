@@ -1,9 +1,8 @@
-// 채팅방 목록
 import React from 'react';
 import styled from 'styled-components/native';
-import { Dimensions } from 'react-native';
+import { Dimensions, TouchableOpacity, Image } from 'react-native';
 
-export default function ChatListScreen() {
+export default function ChatListScreen({ navigation }) {
   const chatRooms = [
     { id: '1', title: '나누군지아는사람?', description: '굿' },
     { id: '2', title: '해커스 토플 인터미디엇 5권', description: '대화를 시작해보세요.' },
@@ -16,23 +15,26 @@ export default function ChatListScreen() {
       </Header>
       <Content>
         {chatRooms.map((room) => (
-          <ChatRoom key={room.id}>
-            <Avatar />
-            <ChatInfo>
-              <ChatTitle>{room.title}</ChatTitle>
-              <ChatDescription>{room.description}</ChatDescription>
-            </ChatInfo>
-          </ChatRoom>
+          <TouchableOpacity
+            key={room.id}
+            onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
+          >
+            <ChatRoom>
+              <Avatar source={require('../../../assets/comment_profile.png')} />
+              <ChatInfo>
+                <ChatTitle>{room.title}</ChatTitle>
+                <ChatDescription>{room.description}</ChatDescription>
+              </ChatInfo>
+            </ChatRoom>
+          </TouchableOpacity>
         ))}
       </Content>
     </Screen>
   );
 }
 
-// Get screen dimensions
 const { width } = Dimensions.get('window');
 
-// Styled Components
 const Screen = styled.View`
   flex: 1;
   background-color: #ffffff;
@@ -66,11 +68,10 @@ const ChatRoom = styled.View`
   margin: 0 auto; /* 가운데 정렬 */
 `;
 
-const Avatar = styled.View`
+const Avatar = styled.Image`
   width: 50px;
   height: 50px;
   border-radius: 25px;
-  background-color: #e4e4e4;
   margin-right: 15px;
 `;
 

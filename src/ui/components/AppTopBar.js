@@ -1,27 +1,21 @@
 import React from 'react';
-import { SafeAreaView, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import styled from 'styled-components/native';
 
-export default function AppTopBar({ title, icon, onIconPress, rightIcon, onRightIconPress }) {
+export default function AppTopBar({ title, iconSource, onIconPress, rightIconSource, onRightIconPress }) {
   return (
     <SafeAreaContainer>
       <HeaderContainer>
-        <IconGroup>
-          {icon && (
-            <TouchableOpacity onPress={onIconPress}>
-              <IconWrapper>
-                <Ionicons name={icon} size={22} color="black" />
-              </IconWrapper>
-            </TouchableOpacity>
-          )}
-        </IconGroup>
+        {iconSource && (
+          <TouchableOpacity onPress={onIconPress}>
+            <IconImage source={iconSource} />
+          </TouchableOpacity>
+        )}
         <Title>{title}</Title>
-        {rightIcon && (
+        {rightIconSource && (
           <TouchableOpacity onPress={onRightIconPress}>
-            <IconWrapper>
-              <Ionicons name={rightIcon} size={22} color="black" />
-            </IconWrapper>
+            <Ionicons name={rightIconSource} size={22} color="black" />
           </TouchableOpacity>
         )}
       </HeaderContainer>
@@ -30,34 +24,25 @@ export default function AppTopBar({ title, icon, onIconPress, rightIcon, onRight
 }
 
 const SafeAreaContainer = styled(SafeAreaView)`
-  background-color: ${(props) => props.theme.background};
+  background-color: ${(props) => props.theme.background || '#ffffff'};
 `;
 
 const HeaderContainer = styled.View`
-  padding-bottom: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 20px;
-  background-color: ${(props) => props.theme.background};
+  padding: 20px 20px 10px 20px;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+  align-items: center; /* 아이콘과 텍스트를 수평 정렬 */
+  justify-content: space-between; /* 좌우 아이콘과 제목 간 간격 일정 */
+  background-color: ${(props) => props.theme.background || '#ffffff'};
 `;
 
 const Title = styled.Text`
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
-  padding-bottom: 5px;
-  color: ${(props) => props.theme.text};
+  text-align: center;
+  color: ${(props) => props.theme.text || '#000000'};
 `;
 
-const IconGroup = styled.View`
-  flex-direction: row;
-`;
-
-const IconWrapper = styled.View`
-  padding-left: 6px;
-  padding-right: 6px;
+const IconImage = styled.Image`
+  width: 22px;
+  height: 22px;
 `;

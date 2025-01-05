@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native'; // 추가
 import AppTopBar from '../components/AppTopBar';
 import ChatList from '../components/ChatList';
 import ChatInput from '../components/ChatInput';
-import ChatSideModal from '../components/ChatSideModal'; // 사이드 모달: 채팅방, 참여자 정보
+import ChatSideModal from '../components/ChatSideModal'; 
 import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 export default function Chat() {
+  const navigation = useNavigation(); // 네비게이션 객체 가져오기
   const dummyMessages = [
     { id: '1', sender: '나', message: '혹시 김멋사?', created_at: '2024-12-28 12:31 PM' },
     { id: '2', sender: '익명', message: '오', created_at: '2024-12-28 12:40 PM' },
@@ -17,10 +19,8 @@ export default function Chat() {
 
   const handleSend = (message) => {
     const now = new Date();
-  
     const formattedDate = now.toLocaleDateString('en-CA'); // YYYY-MM-DD 형식
     const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-  
     setMessages([
       ...messages,
       {
@@ -41,14 +41,14 @@ export default function Chat() {
       <Screen>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior="padding" // iOS에서만 작동
-          keyboardVerticalOffset={-40} // 상태바 + 상단바 높이 조정
+          behavior="padding"
+          keyboardVerticalOffset={-40} 
         >
           <AppTopBar
             title="채팅"
-            icon="arrow-back"
-            onIconPress={() => console.log("뒤로가기 클릭됨")}
-            rightIcon="ellipsis-vertical"
+            iconSource={require('../../../assets/arrow_back_black.png')}
+            onIconPress={() => navigation.goBack()} // 뒤로가기 설정
+            rightIconSource="ellipsis-vertical"
             onRightIconPress={toggleModal}
           />
           <Content>
@@ -58,7 +58,6 @@ export default function Chat() {
             <ChatInput onSend={handleSend} />
           </ChatInputContainer>
         </KeyboardAvoidingView>
-        {/* ChatSideModal 추가 */}
         <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} />
       </Screen>
     </TouchableWithoutFeedback>
@@ -79,9 +78,9 @@ const Content = styled.View`
 `;
 
 const ChatInputContainer = styled.View`
-  height: 100px; /* 입력창 높이 고정 */
+  height: 100px;
   width: 100%;
-  border-top-width: 1px;
+  border-top-width: 0.1px;
   border-top-color: #e0e0e0;
   background-color: ${(props) => props.theme.background || '#FFFFFF'};
 `;

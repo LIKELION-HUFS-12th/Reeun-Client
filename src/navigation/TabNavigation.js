@@ -4,7 +4,7 @@ import { View, Image } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import HomeScreen from '../ui/screens/Home';
-import ChatListScreen from '../ui/screens/ChatListScreen';
+import ChatStack from './ChatStack'; // ChatListScreen 대신 ChatStack import
 import Notification from '../ui/screens/Notification';
 import MyPage from '../ui/screens/MyPage';
 
@@ -46,7 +46,7 @@ export default function TabNavigator() {
 
           if (route.name === 'Home') {
             iconPath = require('../../assets/home.png');
-          } else if (route.name === 'ChatList') {
+          } else if (route.name === 'Chat') { // ChatList -> Chat 변경
             iconPath = require('../../assets/dm.png');
           } else if (route.name === 'Notification') {
             iconPath = require('../../assets/notification.png');
@@ -59,7 +59,7 @@ export default function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="ChatList" component={ChatListScreen} />
+      <Tab.Screen name="Chat" component={ChatStack} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Mypage" component={MyPage} />
     </Tab.Navigator>
