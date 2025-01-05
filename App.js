@@ -1,63 +1,15 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, Image } from 'react-native';
+import { ThemeProvider, useTheme } from 'styled-components/native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import HomeScreen from './src/ui/screens/Home';
 import ChatListScreen from './src/ui/screens/ChatListScreen';
-import NotificationScreen from './src/ui/screens/Notification';
-import MyPageScreen from './src/ui/screens/MyPage';
-import { Image, View } from 'react-native';
-import Login_Home from './src/ui/screens/Login_Home';
-import Signup_home from './src/ui/screens/Signup_home';
-import Login_Contents from './src/ui/screens/Login_Contents';
-import Signup_Contents from './src/ui/screens/Signup_Contents';
-import SetClass from './src/ui/screens/SetClass';
-
-import SetSchool from './src/ui/screens/SetSchool';
-
-// Tab과 Stack 네비게이터 생성
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-
-// Tab Navigator
-function TabNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown:false,
-        initialRouterName:'Home',
-        tabBarIcon: ({ focused }) => {
-          let iconPath;
-          if (route.name === 'Home') {
-            iconPath = require('./assets/home.png');
-          } else if (route.name === 'ChatList') {
-            iconPath = require('./assets/dm.png');
-          } else if (route.name === 'Notification') {
-            iconPath = require('./assets/notification.png');
-          } else if (route.name === 'Mypage') {
-            iconPath = require('./assets/my.png');
-          }
-
-          return (
-            <Image
-              source={iconPath}
-              style={{
-                width: focused ? 35 : 25,
-                height: focused ? 35 : 25,
-                resizeMode: 'contain',
-              }}
-            />
-          );
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="ChatList" component={ChatListScreen} />
-      <Tab.Screen name="Notification" component={NotificationScreen} />
-      <Tab.Screen name="Mypage" component={MyPageScreen} />
-    </Tab.Navigator>
-  );
-}
+import Notification from './src/ui/screens/Notification';
+import MyPage from './src/ui/screens/MyPage';
+import { color } from './src/ui/styles/Color';
 
 // Stack Navigator
 function AppNavigator() {
@@ -79,9 +31,15 @@ function AppNavigator() {
 export default function App() {
   return (
     
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <AppNavigator />
+    // </NavigationContainer>
     
+    <ThemeProvider theme={color}>
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   );
 }
