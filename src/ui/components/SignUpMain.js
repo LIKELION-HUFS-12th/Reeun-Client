@@ -4,9 +4,9 @@ import styled from 'styled-components/native'
 import axios from 'axios';
 
 const SignUpMain = ({step, setStep, setIsComplete}) => {
-  const questionEl = ["아이디", "비밀번호", "닉네임", ["학교", "입학년도"]]
-  const questionList = ["아이디를", "비밀번호를", "닉네임을", ["출신학교를", "입학년도를"]]
-  const placeholderText = step === 4 ? `${questionList[3][0]} 입력하세요`:`${questionList[step-1]} 입력하세요`
+  const questionEl = ["아이디", "비밀번호", "닉네임"]
+  const questionList = ["아이디를", "비밀번호를", "닉네임을"]
+  const placeholderText = `${questionList[step-1]} 입력하세요`
   const [userInfo, setUserInfo] = useState([]);
   const [presentValue, setPresentValue] = useState("");
 
@@ -49,14 +49,14 @@ const SignUpMain = ({step, setStep, setIsComplete}) => {
     return(
       <>
       <InputArea>
-        <InputTitle>{step === 4 ? questionEl[3][0]:questionEl[step-1]}</InputTitle>
+        <InputTitle>{questionEl[step-1]}</InputTitle>
         <InputBox
           placeholder={placeholderText} value={presentValue} onChange={(event) => {handlePresentValue(event)}}
         ></InputBox>
       </InputArea>
       <View style={{justifyContent:'center', alignItems:'center', marginTop:250}}>
-          <NextStepButton>
-            <NextText onPress={step===4 ? handleSignUp:handleStep}>{ step === 4 ? "가입하기" : "다음 단계로"}</NextText>
+          <NextStepButton onPress={step===3 ? handleSignUp:handleStep}>
+            <NextText >{ step === 3 ? "가입하기" : "다음 단계로"}</NextText>
           </NextStepButton>
         </View>
       </>

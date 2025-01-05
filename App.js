@@ -11,6 +11,9 @@ import Login_Home from './src/ui/screens/Login_Home';
 import Signup_home from './src/ui/screens/Signup_home';
 import Login_Contents from './src/ui/screens/Login_Contents';
 import Signup_Contents from './src/ui/screens/Signup_Contents';
+import SetClass from './src/ui/screens/SetClass';
+
+import SetSchool from './src/ui/screens/SetSchool';
 
 // Tab과 Stack 네비게이터 생성
 const Tab = createBottomTabNavigator();
@@ -66,6 +69,8 @@ function AppNavigator() {
       <Stack.Screen name='SignUp' component={Signup_home} options={{headerShown:false}}/>
       <Stack.Screen name='LoginContents' component={Login_Contents} options={{headerShown:false}}/>
       <Stack.Screen name='SignUpContents' component={Signup_Contents} options={{headerShown:false}}/>
+      <Stack.Screen name='SetSchool' component={SetSchool} options={{headerShown:false}}/>
+      <Stack.Screen name='SetClass' component={SetClass} options={{headerShown:false}}/>
     </Stack.Navigator>
   );
 }

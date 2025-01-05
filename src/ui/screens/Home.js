@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useUserInfoStore, useUserStore } from '../../logic/store/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
   const [school, setSchool] = useState([]);
   const [classList, setClassList] = useState([]);
   const [enrollYear, setEnrollYear] = useState("");
@@ -15,7 +15,7 @@ export default function HomeScreen() {
   const getToken = async () => {
     try {
       const token = await AsyncStorage.getItem('accessToken'); // 저장된 키 이름 확인
-      console.log(token); // 여기서 token은 문자열
+      // console.log(token); // 여기서 token은 문자열
       return(token)
     } catch (error) {
       console.error('Error reading token:', error);
@@ -39,7 +39,7 @@ export default function HomeScreen() {
       const data = response.data.data;
       AsyncStorage.setItem('userData', JSON.stringify(data));
       setUserInfo(data);
-      console.log(data);
+      // console.log(data);
       setUserInfo(data);
     } catch (error) {
       console.log(error);
@@ -67,7 +67,8 @@ export default function HomeScreen() {
   useEffect(() => {
     
     getUserInfo();
-  }, [])
+    console.log(userInfo);
+  }, [user])
   
 
   return (
@@ -96,7 +97,14 @@ export default function HomeScreen() {
 
       <View style={styles.section}>
         <Text style={styles.communityTitleText}>
-        <Text style={styles.highlight}>{userInfo.username}</Text> 님의 {"\n"}<Text style={styles.bold}>학교 커뮤니티</Text>
+          {user ? 
+          <>
+          <Text style={styles.highlight}>{userInfo.username}</Text> 님의 {"\n"}<Text style={styles.bold}>학교 커뮤니티</Text>
+          </>
+          :
+          <Text style={{fontWeight:'bold', fontSize:20}}>로그인 해주세요</Text>
+        }
+          
         </Text>
       </View>
 
@@ -127,16 +135,25 @@ export default function HomeScreen() {
       </TouchableOpacity>
       }
       <View style={styles.classCommunity}>
-        <Text style={styles.communityTitleText}>
+      <Text style={styles.communityTitleText}>
+        {user?
+        <>
+        
         <Text style={styles.highlight}>{userInfo.username}</Text> 님의 {"\n"}<Text style={styles.bold}>학급 커뮤니티</Text>
-        </Text>
+        
+        </>
+        :
+        <Text style={{fontWeight:'bold', fontSize:20}}>로그인 해주세요</Text>
+      }
+      </Text>  
+        
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {userInfo.classList ? 
           <TouchableOpacity style={styles.classButton}>
           <View style={styles.classButtonInner}>
             <Text style={{fontSize:19, fontWeight:'bold', color:"#6C6C6C"}}>반을 등록해주세요</Text>
           </View>
-          <TouchableOpacity style={{marginTop:'15'}}>
+          <TouchableOpacity style={{marginTop:'15'}} onPress={() => navigation.navigate('SetClass')}>
             <Text style={{fontSize: 17,fontWeight: 'bold',color: '#FB5E3D',textAlign: 'left',}}>등록하기</Text>
           </TouchableOpacity>
           </TouchableOpacity>

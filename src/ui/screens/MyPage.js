@@ -22,8 +22,11 @@ const MyPage = ({navigation}) => {
         }
       
       })
-      console.log("성공!")
+      console.log("성공!");
+      setUserInfo([]);
       setUser(false);
+      console.log(userInfo);
+      console.log(user);
     } catch (error) {
       console.log(error);
       console.log("에러!!");
@@ -80,10 +83,12 @@ const MyPage = ({navigation}) => {
     ])
   }
   
-  // useEffect(() => {
-  //   getUserInfo();
-  //   console.log(userInfo);
-  // }, [])
+  useEffect(() => {
+    setUserInfo([]);
+  
+  }, [user])
+  
+  
   
 
   return (
@@ -101,7 +106,7 @@ const MyPage = ({navigation}) => {
       </EditButton>
       <ProfileContents>
         <ProfileImg source={require('../../../assets/profile_img.png')} />
-        <UserName>{userInfo.username}</UserName>
+        <UserName>{user ? userInfo.username:"로그인해주세요"}</UserName>
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
           {userInfo.school ? userInfo.school
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
