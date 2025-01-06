@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 import styled from 'styled-components/native'
 
 const SignUpStep = ({step, setStep}) => {
-  const steps = [1, 2, 3, 4]
+  const steps = [1, 2, 3]
 
   return (
     <StepContents>
@@ -19,7 +19,7 @@ const SignUpStep = ({step, setStep}) => {
             
             
             {
-              el!==4 ? <Dotes>{"-"}{"-"}</Dotes> : <></>
+              el!==3 ? <Dotes>{"-"}{"-"}</Dotes> : <></>
             }
             
             
