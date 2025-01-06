@@ -115,7 +115,7 @@ export default function HomeScreen({navigation}) {
           source={require('../../../assets/school.png')}
           style={styles.schoolIcon}
         />
-        <Text style={styles.schoolName}>리운초</Text>
+        <Text style={styles.schoolName}>{userInfo.school.school_name}</Text>
         <Text style={styles.schoolYear}>2014 년</Text>
         <Text style={styles.schoolSubtitle}>입학생</Text>
       </View>
@@ -128,7 +128,7 @@ export default function HomeScreen({navigation}) {
             style={styles.schoolIcon}
           />
           <Text style={styles.schoolName}>학교를 등록해주세요</Text>
-          <TouchableOpacity style={{marginTop:'15'}}>
+          <TouchableOpacity style={{marginTop:'15'}} onPress={() => navigation.navigate('SetSchool')}>
             <Text style={{fontSize: 19,fontWeight: 'bold',color: '#FB5E3D',textAlign: 'left',}}>등록하기</Text>
           </TouchableOpacity>
         </View>

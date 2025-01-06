@@ -108,7 +108,7 @@ const MyPage = ({navigation}) => {
         <ProfileImg source={require('../../../assets/profile_img.png')} />
         <UserName>{user ? userInfo.username:"로그인해주세요"}</UserName>
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
-          {userInfo.school ? userInfo.school
+          {userInfo.school ? userInfo.school.school_name
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
           </UserSchool>
       </ProfileContents>

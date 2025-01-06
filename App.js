@@ -10,6 +10,16 @@ import ChatListScreen from './src/ui/screens/ChatListScreen';
 import Notification from './src/ui/screens/Notification';
 import MyPage from './src/ui/screens/MyPage';
 import { color } from './src/ui/styles/Color';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import TabNavigator from './src/navigation/TabNavigation';
+import Login_Home from './src/ui/screens/Login_Home';
+import Signup_home from './src/ui/screens/Signup_home';
+import Login_Contents from './src/ui/screens/Login_Contents';
+import Signup_Contents from './src/ui/screens/Signup_Contents';
+import SetSchool from './src/ui/screens/SetSchool';
+import SetClass from './src/ui/screens/SetClass';
+
+const Stack = createNativeStackNavigator();
 
 // Stack Navigator
 function AppNavigator() {
@@ -32,12 +42,12 @@ export default function App() {
   return (
     
     // <NavigationContainer>
-    //   <AppNavigator />
+    //   
     // </NavigationContainer>
     
     <ThemeProvider theme={color}>
       <NavigationContainer>
-        <TabNavigator />
+        <AppNavigator />
       </NavigationContainer>
       <StatusBar style="auto" />
     </ThemeProvider>
