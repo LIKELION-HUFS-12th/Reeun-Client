@@ -4,28 +4,16 @@ import { useUserInfoStore, useUserStore } from '../../logic/store/user';
 import { Text, View } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
+import { useAsync } from '../../hooks/useAsync';
 
 const SetClass = () => {
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {user, setUser} = useUserStore();
   const [grade, setGrade] = useState("");
   const [classNum, setClassNum] = useState("");
+  const {handleSetClass} = useAsync();
 
-  const handleSetClass = async() => {
-    try {
-      const response = await axios.post("https://reeun.store/member/setclass/",{
-        grade:grade,
-        order:classNum
-      },{
-        headers:{
-          Authorization:`Bearer ${user}`
-        }
-      })
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
   return (
    <SafeAreaView style={{backgroundColor:"white"}}>
@@ -59,7 +47,7 @@ const SetClass = () => {
     </InputArea>
     </View>
     <View style={{justifyContent:'center', alignItems:'center', marginTop:200}}>
-        <NextStepButton onPress={handleSetClass}>
+        <NextStepButton onPress={() => {handleSetClass(grade, classNum)}}>
           <NextText>등록하기</NextText>
         </NextStepButton>
       </View>

@@ -1,80 +1,68 @@
 import React, { useState } from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import logo from '../../../assets/logo.png'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../../logic/store/user'
+import { useAsync } from '../../hooks/useAsync'
+import { useLogIn } from '../../hooks/useLogIn'
 
 
 const Login_Contents = ({navigation}) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const {user, setUser} = useUserStore();
+  const {handleLogIn} = useAsync();
+  const {handleId, handlePassword} = useLogIn();
 
-  const handleLogIn = async () => {
-    try {
-      const response = await axios.post("https://reeun.store/member/login/",{
-      username:id,
-      password:password
-    });
-      const data = response.data.data;
-      const accessToken = data.access;
-      AsyncStorage.setItem('accessToken', accessToken);
-      AsyncStorage.setItem('userData', JSON.stringify(data.user));
-      setUser(accessToken);
-      console.log(user);
-      navigation.navigate('Tabs')
-    } catch (error) {
-      console.log(error);
-    }
-    
-  }
-
-  const handleId = (e) => {
-    setId(e.nativeEvent.text);
-    console.log(e.nativeEvent.text)
-  }
-
-  const handlePassword = (e) => {
-    setPassword(e.nativeEvent.text);
-    console.log(e.nativeEvent.text)
-  }
+  
 
   return (
     <>
+    
     <SafeAreaView style={{backgroundColor:'white'}}>
+    
       <View style={{margin:"auto"}}>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={70}>
         <LogoImg source={logo}></LogoImg>
+        
         <LoginBody>
           <LoginText>로그인</LoginText>
-          <InputBody>
-            <LoginInput
-              placeholder="아이디를 입력하세요"
-              placeholderTextColor="#898989"
-              value={id}
-              onChange={(e) => handleId(e)}
-              >
-            </LoginInput>
-            <LoginInput
-              placeholder="비밀번호를 입력하세요"
-              placeholderTextColor="#898989"
-              value={password}
-              secureTextEntry={true} 
-              onChange={(e) => handlePassword(e)}
-              >
-            </LoginInput>
-          </InputBody>
+          
+            <InputBody>
+              <LoginInput
+                placeholder="아이디를 입력하세요"
+                placeholderTextColor="#898989"
+                value={id}
+                onChange={(e) => handleId(e, setId)}
+                >
+              </LoginInput>
+              <LoginInput
+                placeholder="비밀번호를 입력하세요"
+                placeholderTextColor="#898989"
+                value={password}
+                secureTextEntry={true} 
+                onChange={(e) => handlePassword(e, setPassword)}
+                >
+              </LoginInput>
+            </InputBody>
+          
         </LoginBody>
+        </KeyboardAvoidingView>
         <View style={{justifyContent:'center', alignItems:'center', marginTop:150}}>
-          <LoginButton onPress={handleLogIn}>
+          <LoginButton onPress={() => {
+            handleLogIn(id, password, navigation);
+            // navigation.navigate('Tabs')
+            }}>
             <ButtonText>로그인하기</ButtonText>
           </LoginButton>
         </View>
         
       </View>
+      
     </SafeAreaView>
+    
     </>
   )
 }

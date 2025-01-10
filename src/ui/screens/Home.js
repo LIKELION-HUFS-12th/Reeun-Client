@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'rea
 import axios from 'axios';
 import { useUserInfoStore, useUserStore } from '../../logic/store/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAsync } from '../../hooks/useAsync';
 
 export default function HomeScreen({navigation}) {
   const [school, setSchool] = useState([]);
@@ -10,41 +11,7 @@ export default function HomeScreen({navigation}) {
   const [enrollYear, setEnrollYear] = useState("");
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
-  // const [user]
-
-  const getToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem('accessToken'); // 저장된 키 이름 확인
-      // console.log(token); // 여기서 token은 문자열
-      return(token)
-    } catch (error) {
-      console.error('Error reading token:', error);
-    }
-  };
-
-  const currentUserToken = getToken();
-
-  const getUserInfo = async () => {
-    try {
-      const token = await getToken(); // getToken의 결과를 기다림
-      if (!token) {
-        console.error('Token is null or undefined');
-        return;
-      }
-      const response = await axios.get("https://reeun.store/member/getinfo/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = response.data.data;
-      AsyncStorage.setItem('userData', JSON.stringify(data));
-      setUserInfo(data);
-      // console.log(data);
-      setUserInfo(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const {getToken , getUserInfo} = useAsync();
 
   const classLender = () => {
     
@@ -61,8 +28,6 @@ export default function HomeScreen({navigation}) {
       }
     
   }
-
-  
   
   useEffect(() => {
     
@@ -149,6 +114,7 @@ export default function HomeScreen({navigation}) {
         
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {userInfo.classList ? 
+          classLender():
           <TouchableOpacity style={styles.classButton}>
           <View style={styles.classButtonInner}>
             <Text style={{fontSize:19, fontWeight:'bold', color:"#6C6C6C"}}>반을 등록해주세요</Text>
@@ -157,8 +123,8 @@ export default function HomeScreen({navigation}) {
             <Text style={{fontSize: 17,fontWeight: 'bold',color: '#FB5E3D',textAlign: 'left',}}>등록하기</Text>
           </TouchableOpacity>
           </TouchableOpacity>
-          :
-          classLender()
+          
+          
           }
         </ScrollView>
       </View>

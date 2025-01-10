@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import { useUserInfoStore, useUserStore } from '../../logic/store/user'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import SignUpStep from '../components/SignUpStep';
 
-const SetSchool = () => {
+const SetSchool = ({navigation}) => {
   const {userInfo, setUserInfo} = useUserInfoStore();
     const {user, setUser} = useUserStore();
     const [isModalVisible, setModalVisible] = useState(false);
@@ -23,7 +23,8 @@ const SetSchool = () => {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [schoolInfo, setSchoolInfo] = useState([]);
     const[step, setStep] = useState(1);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [enrollYear, setEnrollYear] = useState("");
+    
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const regionList = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시','경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도', '재외한국학교']
 
@@ -38,9 +39,9 @@ const SetSchool = () => {
     // }
   
 
-    // useEffect(() => {
-    //   getSchoolInfo();
-    // }, [selectedRegion])
+    useEffect(() => {
+  
+    }, [])
 
 
     const handleNextStep = async(selectedRegion) => {
@@ -58,7 +59,7 @@ const SetSchool = () => {
       } else if(step===2){
         try {
           const response = await axios.post("https://reeun.store/member/setschool/",{
-            schoolId:270
+            schoolId:2
           },{
             headers:{
               Authorization:`Bearer ${user}`
@@ -70,6 +71,21 @@ const SetSchool = () => {
           
         }
         setStep(3);
+      }else if(step===3){
+        try {
+          const response = await axios.post("https://reeun.store/member/setenrollyear/",{
+            enrollYear:enrollYear
+          },{
+            headers:{
+              Authorization:`Bearer ${user}`
+            }
+          });
+          console.log('성공!');
+          navigation.navigate('Home')
+        } catch (error) {
+          console.log(error);
+          console.log(typeof(enrollYear));
+        }
       }
       
     }
@@ -188,11 +204,29 @@ const SetSchool = () => {
                   };
                 
                   const handleConfirm = (date) => {
-                    setSelectedDate(dayjs(date));
+                    console.warn("A date has been picked: ", typeof(date.getFullYear()));
+                    const year = date.getFullYear();
+                    setEnrollYear(year);
                     hideDatePicker();
                   };
-                  
-                }
+                
+                  return (
+                    <View>
+                      <View style={{backgroundColor:'#f4f4f4',padding:15, width:290,height:50,borderRadius:10,fontSize:16, marginLeft:40, marginTop:-25, position:'relative'}}>
+                        <Button title="Show Date Picker" onPress={showDatePicker} style={{width:400}}/>
+                        <Text style={{color:"#666", fontSize:16, position:'absolute', top:18, left:'15'}}>{enrollYear?enrollYear:"입학년도를 입력해주세요."}</Text>
+                        </View>
+                      <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                      />
+                      
+                    </View>
+                  );
+                };
+                
                 return(
                   <>
                   
@@ -224,7 +258,7 @@ const SetSchool = () => {
                       }
                       </View>
                       </View>
-                      <View style={{justifyContent:'center', alignItems:'center', marginTop:280,}}>
+                      <View style={{justifyContent:'center', alignItems:'center', marginTop:step===3?305:280,}}>
                           <NextStepButton onPress={() => step===handleNextStep(selectedRegion)}>
                             <NextText>다음 단계로</NextText>
                           </NextStepButton>
@@ -314,6 +348,7 @@ padding:15px 20px;
    height:50px;
    border-radius:10px;
    font-size:16px;
+ 
 `;
 
 const InputText = styled.Text`
