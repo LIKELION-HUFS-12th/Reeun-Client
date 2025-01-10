@@ -2,9 +2,9 @@ import React from 'react'
 import { Text } from 'react-native'
 import styled from 'styled-components/native'
 
-const ClassEl = ({grade, grade_text}) => {
+const ClassEl = ({grade, grade_text, key}) => {
   return (
-    <ClassElBody>
+    <ClassElBody key={key}>
       <GradeBody>
         <Text style={{color:"white", fontSize:"20", fontWeight:"800"}}>{grade}</Text>
       </GradeBody>

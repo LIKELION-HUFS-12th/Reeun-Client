@@ -24,9 +24,12 @@ const SetSchool = ({navigation}) => {
     const [schoolInfo, setSchoolInfo] = useState([]);
     const[step, setStep] = useState(1);
     const [enrollYear, setEnrollYear] = useState("");
+    const [allSchoolList, setAllSchoolList] = useState([]);
+    
     
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const regionList = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시','경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도', '재외한국학교']
+
 
     // const getSchoolInfo = async () => {
     //   try {
@@ -43,12 +46,13 @@ const SetSchool = ({navigation}) => {
   
     }, [])
 
-
+  
     const handleNextStep = async(selectedRegion) => {
       if(step===1){
         try {
           const response = await axios.get("https://reeun.store/school/getallschool/");
           const data = response.data.data;
+          setAllSchoolList(data);
           const schoolList = data.filter((school) => school.city === selectedRegion);
           const schoolNames = schoolList.map(item => item.school_name);
           setSchoolInfo(schoolNames);
@@ -57,20 +61,24 @@ const SetSchool = ({navigation}) => {
           console.log(error)
         }
       } else if(step===2){
+        const selectedSchoolInfo = allSchoolList.filter((school) => school.school_name === selectedSchool);
+        const selectedSchoolId = selectedSchoolInfo[0].id;
         try {
           const response = await axios.post("https://reeun.store/member/setschool/",{
-            schoolId:2
+            schoolId:selectedSchoolId
           },{
             headers:{
               Authorization:`Bearer ${user}`
             }
           })
           console.log(response.data);
+          setStep(3);
         } catch (error) {
           console.log(error);
+          console.log(selectedSchoolId);
           
         }
-        setStep(3);
+        
       }else if(step===3){
         try {
           const response = await axios.post("https://reeun.store/member/setenrollyear/",{

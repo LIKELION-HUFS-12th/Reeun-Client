@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 import axios from 'axios';
 import { useAsync } from '../../hooks/useAsync';
 
-const SetClass = () => {
+const SetClass = ({navigation}) => {
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {user, setUser} = useUserStore();
   const [grade, setGrade] = useState("");
@@ -47,7 +47,7 @@ const SetClass = () => {
     </InputArea>
     </View>
     <View style={{justifyContent:'center', alignItems:'center', marginTop:200}}>
-        <NextStepButton onPress={() => {handleSetClass(grade, classNum)}}>
+        <NextStepButton onPress={() => {handleSetClass(grade, classNum, navigation)}}>
           <NextText>등록하기</NextText>
         </NextStepButton>
       </View>

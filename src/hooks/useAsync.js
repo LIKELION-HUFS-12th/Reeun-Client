@@ -34,27 +34,26 @@ export const useAsync = () => {
       // console.log(token); // 여기서 token은 문자열
       return(token)
     } catch (error) {
-      console.error('Error reading token:', error);
+      console.log(error);
     }
   };
 
   const getUserInfo = async () => {
     try {
-      const token = await getToken(); // getToken의 결과를 기다림
-      if (!token) {
-        console.error('Token is null or undefined');
+      // const token = await getToken(); // getToken의 결과를 기다림
+      if (!user) {
+        console.log("token is null or undefined")
         return;
       }
       const response = await axios.get("https://reeun.store/member/getinfo/", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user}`,
         },
       });
       const data = response.data.data;
-      AsyncStorage.setItem('userData', JSON.stringify(data));
+      // AsyncStorage.setItem('userData', JSON.stringify(data));
       setUserInfo(data);
       // console.log(data);
-      setUserInfo(data);
     } catch (error) {
       console.log(error);
     }
@@ -68,8 +67,8 @@ export const useAsync = () => {
     });
       const data = response.data.data;
       const accessToken = data.access;
-      AsyncStorage.setItem('accessToken', accessToken);
-      AsyncStorage.setItem('userData', JSON.stringify(data.user));
+      // AsyncStorage.setItem('accessToken', accessToken);
+      // AsyncStorage.setItem('userData', JSON.stringify(data.user));
       setUser(accessToken);
       navigation.navigate("Tabs");
       console.log(user);
@@ -91,6 +90,8 @@ export const useAsync = () => {
       console.log("성공!");
       setUserInfo([]);
       setUser(false);
+      AsyncStorage.mergeItem('accessToken', "");
+      AsyncStorage.mergeItem('userData', "");
       console.log(userInfo);
       console.log(user);
     } catch (error) {
@@ -117,19 +118,21 @@ export const useAsync = () => {
     }
   }
 
-  const handleSetClass = async(grade, classNum) => {
+  const handleSetClass = async(grade, classNum, navigation) => {
     try {
       const response = await axios.post("https://reeun.store/member/setclass/",{
-        grade:grade,
-        order:classNum
+        grade:Number(grade),
+        order:Number(classNum)
       },{
         headers:{
           Authorization:`Bearer ${user}`
         }
       })
-      console.log(response);
+      console.log("성공!");
+      navigation.navigate("Tabs");
     } catch (error) {
       console.log(error);
+      console.log(typeof(Int(grade)));
     }
   }
 

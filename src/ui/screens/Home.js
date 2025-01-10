@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useUserInfoStore, useUserStore } from '../../logic/store/user';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useAsync } from '../../hooks/useAsync';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ClassEl from '../components/ClassEl';
+import ClassAddEl from '../components/ClassAddEl';
+
 
 export default function HomeScreen({navigation}) {
   const [school, setSchool] = useState([]);
@@ -13,27 +18,32 @@ export default function HomeScreen({navigation}) {
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {getToken , getUserInfo} = useAsync();
 
-  const classLender = () => {
+  const classLender = (classList) => {
     
-      {Array.from({ length: 6 }).map((_, index) => (
-        <TouchableOpacity key={index} style={styles.classButton}>
-          <View style={styles.classButtonInner}>
-            <View style={styles.numberCircle}>
-              <Text style={styles.classButtonText}>{index + 1}</Text>
-            </View>
-          </View>
-          <Text style={styles.classButtonSubText}>{index + 1}학년 {index + 1}반</Text>
-        </TouchableOpacity>
-      ))
-      }
-    
-  }
+    classList.map((el, index) => {
+      return(
+      <View key={index}>
+        <Text>{el.grade}</Text>
+      </View>
+      )
+      });
+  };
   
-  useEffect(() => {
+      
     
-    getUserInfo();
-    console.log(userInfo);
-  }, [user])
+  
+
+  useFocusEffect(
+    useCallback(() => {
+      getUserInfo();
+      console.log(userInfo);
+      console.log(user);
+      console.log(userInfo.classList);
+      
+      
+    },[user])
+  )
+
   
 
   return (
@@ -81,7 +91,7 @@ export default function HomeScreen({navigation}) {
           style={styles.schoolIcon}
         />
         <Text style={styles.schoolName}>{userInfo.school.school_name}</Text>
-        <Text style={styles.schoolYear}>2014 년</Text>
+        <Text style={styles.schoolYear}>{userInfo.enrollYear}학년도</Text>
         <Text style={styles.schoolSubtitle}>입학생</Text>
       </View>
       </TouchableOpacity>:
@@ -93,7 +103,7 @@ export default function HomeScreen({navigation}) {
             style={styles.schoolIcon}
           />
           <Text style={styles.schoolName}>학교를 등록해주세요</Text>
-          <TouchableOpacity style={{marginTop:'15'}} onPress={() => navigation.navigate('SetSchool')}>
+          <TouchableOpacity style={{marginTop:'15'}} onPress={() => navigation.navigate(user?'SetSchool':'Login')}>
             <Text style={{fontSize: 19,fontWeight: 'bold',color: '#FB5E3D',textAlign: 'left',}}>등록하기</Text>
           </TouchableOpacity>
         </View>
@@ -113,8 +123,20 @@ export default function HomeScreen({navigation}) {
       </Text>  
         
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {userInfo.classList ? 
-          classLender():
+          {user ? userInfo.classList?.length > 0 ? 
+          <>
+          { userInfo.classList.map((el, index) => {
+            return(
+            <ClassEl grade={el.grade} grade_text={`${el.grade}학년 ${el.order}반`} key={index}></ClassEl>
+            )
+          })
+            
+          }
+          <ClassAddEl navigation={navigation}/>
+          </>
+          :
+          <ClassAddEl navigation={navigation}/>
+          :
           <TouchableOpacity style={styles.classButton}>
           <View style={styles.classButtonInner}>
             <Text style={{fontSize:19, fontWeight:'bold', color:"#6C6C6C"}}>반을 등록해주세요</Text>

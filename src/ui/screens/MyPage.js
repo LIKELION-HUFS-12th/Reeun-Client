@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
@@ -8,23 +8,21 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAsync } from '../../hooks/useAsync'
 import { useMyPage } from '../../hooks/useMyPage'
+import { useFocusEffect } from '@react-navigation/native'
+import ClassAddEl from '../components/ClassAddEl'
 
 const MyPage = ({navigation}) => {
   const class_num = [1, "", 3]
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
-  const {handleLogOut, handleDelete} = useAsync();
+  const {handleLogOut, handleDelete, getUserInfo} = useAsync();
   const {goToLogoutAlert, goToDeleteAlert} = useMyPage();
 
-
-  
-  
-  useEffect(() => {
-    setUserInfo([]);
-  
-  }, [user])
-  
-  
+  useFocusEffect(
+    useCallback(() => {
+      getUserInfo();
+    },[user])
+  )
   
 
   return (
@@ -44,7 +42,7 @@ const MyPage = ({navigation}) => {
         <ProfileImg source={require('../../../assets/profile_img.png')} />
         <UserName>{user ? userInfo.username:"로그인해주세요"}</UserName>
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
-          {userInfo.school ? userInfo.school.school_name
+          {!user ? "":userInfo.school ? userInfo.school.school_name
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
           </UserSchool>
       </ProfileContents>
@@ -62,16 +60,22 @@ const MyPage = ({navigation}) => {
         <Text style={{fontSize:'20', fontWeight:"700", marginLeft:"30", marginBottom:"15"}}>나의 반</Text>
         
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {class_num.map((num, index)=>{
-              return(
-              num === ""?
-              
-              <ClassEl grade={index+1} grade_text={"입력하기"}></ClassEl>
+            {user ? userInfo.classList?.length > 0 ? 
+          <>
+          { userInfo.classList.map((el, index) => {
+            return(
+            <ClassEl grade={el.grade} grade_text={`${el.grade}학년 ${el.order}반`} key={index}></ClassEl>
+            )
+          })
+            
+          }
+          <ClassAddEl navigation={navigation}/>
+          </>
+          :
+          <ClassAddEl navigation={navigation} />
 
-              :
-              <ClassEl grade={index+1} grade_text={`${index+1}학년 ${num}반`}/>
-              )
-            })}
+          :
+          <ClassAddEl navigation={navigation} />}
           </ScrollView>
         
       </ViewMyClass>
