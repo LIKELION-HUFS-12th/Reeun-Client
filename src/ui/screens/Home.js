@@ -17,6 +17,7 @@ export default function HomeScreen({navigation}) {
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {getToken , getUserInfo} = useAsync();
+  const [selectedClass, setSelectedClass] = useState("");
 
   const classLender = (classList) => {
     
@@ -84,7 +85,7 @@ export default function HomeScreen({navigation}) {
       </View>
 
       {userInfo.school ? 
-      <TouchableOpacity style={styles.schoolCommunity}>
+      <TouchableOpacity style={styles.schoolCommunity} onPress={() => navigation.navigate("Board", {version:"School"})}>
       <View style={styles.schoolCard}>
         <Image 
           source={require('../../../assets/school.png')}
@@ -127,7 +128,7 @@ export default function HomeScreen({navigation}) {
           <>
           { userInfo.classList.map((el, index) => {
             return(
-            <ClassEl grade={el.grade} grade_text={`${el.grade}학년 ${el.order}반`} key={index}></ClassEl>
+            <ClassEl grade={el.grade} order={el.order}grade_text={`${el.grade}학년 ${el.order}반`} key={index} navigation={navigation} setSelectedClass={setSelectedClass} selectedClass={selectedClass}></ClassEl>
             )
           })
             

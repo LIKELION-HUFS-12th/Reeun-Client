@@ -1,17 +1,74 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
+import { useUserInfoStore, useUserStore } from '../../logic/store/user';
+import { useAsync } from '../../hooks/useAsync';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
 
-export default function BoardScreen({ navigation }) {
-  const schoolName = "리운"; 
-  const year = "2008"; 
+export default function BoardScreen({route ,navigation}) {
   const memberCount = 11;
+  const {user} = useUserStore();
+  const {userInfo} = useUserInfoStore();
+  const schoolName = userInfo.school.school_name.split("초등학교");
+  const year = userInfo.enrollYear; 
+  const {getSchoolBoardPosts ,getClassBoardPosts} = useAsync();
+  const {version, selectedClass} = route.params;
+
+  const postList = [{"id": 1,
+      "user": "mutsa",
+      "school_name": "경기초등학교",
+      "admission_year": 2007,
+      "title": "새 게시글 제목",
+      "body": "게시글 내용입니다.",
+      "created_at": "2024-09-04",
+      "comments": [
+        {
+          "id": 0,
+          "user": "mutsa2", // 댓글단 유저의 아이디
+          "comment": "댓글입니다.",
+          "created_at": "2024-10-04",
+          "board": 1
+        }
+      ]},{"id": 2,
+      "user": "mutsa",
+      "school_name": "경기초등학교",
+      "admission_year": 2007,
+      "title": "새 게시글 제목2",
+      "body": "게시글 내용입니다.2",
+      "created_at": "2024-09-07",
+      "comments": [
+        {
+          "id": 0,
+          "user": "mutsa2", // 댓글단 유저의 아이디
+          "comment": "댓글입니다.",
+          "created_at": "2024-10-04",
+          "board": 1
+        }
+      ]}]
+
+
+  useFocusEffect(
+    useCallback(() => {
+      if(version==="School"){
+        getSchoolBoardPosts();
+      }
+      if(version==="Class"){
+        getClassBoardPosts();
+      }
+      
+      console.log(version);
+      console.log(navigation);
+      console.log(selectedClass);
+    },[user])
+  )
+
 
   return (
     <Container>
       <Header>
         <TopRow>
-          <BackButton onPress={() => navigation.goBack()}>
+          <BackButton onPress={() => navigation.navigate('Home')}>
             <BackIcon source={require('../../../assets/back.png')} />
           </BackButton>
           <MenuButton>
@@ -19,9 +76,9 @@ export default function BoardScreen({ navigation }) {
           </MenuButton>
         </TopRow>
         <BottomRow>
-          <SchoolName>{schoolName}</SchoolName>
+          <SchoolName>{version === 'School' ? schoolName : `${selectedClass.grade}학년 ${selectedClass.order}반`}</SchoolName>
           <RegularText>
-            초등학교 전체 커뮤니티 (<BoldText>{year}</BoldText>)
+            {version === "School" ? "초등학교 전체 커뮤니티" : "학급 커뮤니티"} {version === "School" ? <BoldText>{`(${year})`}</BoldText> : <></>}
           </RegularText>
         </BottomRow>
       </Header>
@@ -36,19 +93,18 @@ export default function BoardScreen({ navigation }) {
       </MemberSection>
 
       <ScrollView contentContainerStyle={styles.posts}>
-        <Post>
-          <PostTitle>와 우리 학급도 여기 있네??</PostTitle>
-          <PostPreview>다들 보고 싶다!</PostPreview>
-          <PostDate>댓글 2 2024-09-04 익명</PostDate>
-        </Post>
-        <Post>
-          <PostTitle>와 우리 학급도 여기 있네??</PostTitle>
-          <PostPreview>다들 보고 싶다!</PostPreview>
-          <PostDate>댓글 2 2024-09-04 익명</PostDate>
-        </Post>
+        {postList.map((el, index) => {
+          return(
+            <Post key={index}>
+              <PostTitle>{el.title}</PostTitle>
+              <PostPreview>{el.body}</PostPreview>
+              <PostDate>{`댓글 ${el.comments.length} ${el.created_at}`}</PostDate>
+            </Post>
+          )
+        })}
       </ScrollView>
 
-      <WriteButton onPress={() => navigation.navigate('WriteScreen')}>
+      <WriteButton onPress={() => navigation.navigate("Writing")}>
         <WriteButtonText>
           글쓰기  <WritingIcon source={require('../../../assets/writing.png')} />
         </WriteButtonText>
@@ -148,7 +204,7 @@ const ButtonText = styled.Text`
   color: ${(props) => props.theme.main};
 `;
 
-const Post = styled.View`
+const Post = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.itemBackground};
   padding: 18px;
   margin-bottom: 15px;

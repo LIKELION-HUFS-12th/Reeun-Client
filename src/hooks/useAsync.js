@@ -23,7 +23,7 @@ export const useAsync = () => {
     } catch (error) {
       console.log(error);
       console.log(userInfo);
-  
+      
     }
     
   }
@@ -136,6 +136,27 @@ export const useAsync = () => {
     }
   }
 
+  const getSchoolBoardPosts = async() => {
+    try {
+      const response = await axios.get('https://reeun.store/board/',{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+      console.log(user);
+    }
+  }
+
+  const getClassBoardPosts = async () => {
+    try {
+      const response = await axios.get(`https://reeun.store/classboard/${2011}/${4}/${1}/ `)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   return {
@@ -145,7 +166,10 @@ export const useAsync = () => {
     handleLogIn,
     handleLogOut,
     handleDelete,
-    handleSetClass
+    handleSetClass,
+    getSchoolBoardPosts,
+    getClassBoardPosts
+
   }
 }
 
