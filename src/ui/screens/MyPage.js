@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import ClassEl from '../components/ClassEl'
@@ -10,13 +10,16 @@ import { useAsync } from '../../hooks/useAsync'
 import { useMyPage } from '../../hooks/useMyPage'
 import { useFocusEffect } from '@react-navigation/native'
 import ClassAddEl from '../components/ClassAddEl'
+import Modal from 'react-native-modal'
+
 
 const MyPage = ({navigation}) => {
   const class_num = [1, "", 3]
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {handleLogOut, handleDelete, getUserInfo} = useAsync();
-  const {goToLogoutAlert, goToDeleteAlert} = useMyPage();
+  const {goToLogoutAlert, goToDeleteAlert, deleteModalVisible, setDeleteModalVisible} = useMyPage();
+  const [deletePassword, setDeletePassword] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -86,11 +89,31 @@ const MyPage = ({navigation}) => {
       :
       <></>}
       
-      <CancleButton onPress={() => navigation.navigate('Login')}>
+      <CancleButton onPress={() => user ? goToDeleteAlert(handleDelete) : navigation.navigate('Login')}>
         <CancleText>{user ? "탈퇴하기" : "로그인하기"}</CancleText>
       </CancleButton>
       </View>
-      
+      <SafeAreaView>
+        
+        <Modal isVisible={deleteModalVisible} animationIn={'fadeIn'} animationOut={'fadeOut'} onBackdropPress={() => setDeleteModalVisible(false)} >
+          <View style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+          <View style={{width:270, height:150, backgroundColor:'#EFEFEF', position:'absolute', top:"-50", justifyContent:'center', alignItems:'center',
+            borderRadius:15, 
+          }}>
+            <Text style={{fontSize:'18', fontWeight:600, textAlign:'center', marginBottom:10}} >
+              {"탈퇴하시려면 비밀번호를 \n입력해주세요"}
+            </Text>
+            
+            <TextInput secureTextEntry={true} style={{backgroundColor:"white", width:'200', padding:5, borderRadius:2,}} placeholder='비밀번호를 입력하세요' value={deletePassword} onChange={(e) => {setDeletePassword(e.nativeEvent.text)}}></TextInput>
+            <View style={{width:250, backgroundColor:"#B2B2B4", height:'.5', marginTop:'15'}}></View>
+            <TouchableOpacity onPress={() => handleDelete(deletePassword , setDeleteModalVisible)} style={{paddingVertical:15, paddingHorizontal:100, marginBottom:'-20'}}>
+              <Text style={{color:"#017BFF", fontSize:18, fontWeight:500}}>확인</Text>
+            </TouchableOpacity>
+          </View>
+          </View>
+        </Modal>
+        
+      </SafeAreaView>
     </SafeAreaView>
   )
 }

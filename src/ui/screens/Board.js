@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { useUserInfoStore, useUserStore } from '../../logic/store/user';
 import { useAsync } from '../../hooks/useAsync';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
+import MemberModal from '../components/MemberModal';
+import { useBoard } from '../../hooks/useBoard';
 
 export default function BoardScreen({route ,navigation}) {
   const memberCount = 11;
@@ -12,40 +14,45 @@ export default function BoardScreen({route ,navigation}) {
   const {userInfo} = useUserInfoStore();
   const schoolName = userInfo.school.school_name.split("초등학교");
   const year = userInfo.enrollYear; 
-  const {getSchoolBoardPosts ,getClassBoardPosts} = useAsync();
-  const {version, selectedClass} = route.params;
+  const {getSchoolBoardPosts ,getClassBoardPosts, getSchoolMember, getClassMember} = useAsync();
+  const {handleMenu } = useBoard();
+  const {version, selectedClass, setSelectedClass} = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [schoolMember, setSchoolMember] = useState([]);
+  const [classMember, setClassMember] = useState([]);
+  const [postList, setPostList] = useState([]);
 
-  const postList = [{"id": 1,
-      "user": "mutsa",
-      "school_name": "경기초등학교",
-      "admission_year": 2007,
-      "title": "새 게시글 제목",
-      "body": "게시글 내용입니다.",
-      "created_at": "2024-09-04",
-      "comments": [
-        {
-          "id": 0,
-          "user": "mutsa2", // 댓글단 유저의 아이디
-          "comment": "댓글입니다.",
-          "created_at": "2024-10-04",
-          "board": 1
-        }
-      ]},{"id": 2,
-      "user": "mutsa",
-      "school_name": "경기초등학교",
-      "admission_year": 2007,
-      "title": "새 게시글 제목2",
-      "body": "게시글 내용입니다.2",
-      "created_at": "2024-09-07",
-      "comments": [
-        {
-          "id": 0,
-          "user": "mutsa2", // 댓글단 유저의 아이디
-          "comment": "댓글입니다.",
-          "created_at": "2024-10-04",
-          "board": 1
-        }
-      ]}]
+  // const postList = [{"id": 1,
+  //     "user": "mutsa",
+  //     "school_name": "경기초등학교",
+  //     "admission_year": 2007,
+  //     "title": "새 게시글 제목",
+  //     "body": "게시글 내용입니다.",
+  //     "created_at": "2024-09-04",
+  //     "comments": [
+  //       {
+  //         "id": 0,
+  //         "user": "mutsa2", // 댓글단 유저의 아이디
+  //         "comment": "댓글입니다.",
+  //         "created_at": "2024-10-04",
+  //         "board": 1
+  //       }
+  //     ]},{"id": 2,
+  //     "user": "mutsa",
+  //     "school_name": "경기초등학교",
+  //     "admission_year": 2007,
+  //     "title": "새 게시글 제목2",
+  //     "body": "게시글 내용입니다.2",
+  //     "created_at": "2024-09-07",
+  //     "comments": [
+  //       {
+  //         "id": 0,
+  //         "user": "mutsa2", // 댓글단 유저의 아이디
+  //         "comment": "댓글입니다.",
+  //         "created_at": "2024-10-04",
+  //         "board": 1
+  //       }
+  //     ]}]
 
 
   useFocusEffect(
@@ -54,14 +61,15 @@ export default function BoardScreen({route ,navigation}) {
         getSchoolBoardPosts();
       }
       if(version==="Class"){
-        getClassBoardPosts();
+        getClassBoardPosts(selectedClass, setPostList);
       }
       
-      console.log(version);
-      console.log(navigation);
-      console.log(selectedClass);
+      console.log(schoolMember);
     },[user])
   )
+
+
+  
 
 
   return (
@@ -71,9 +79,10 @@ export default function BoardScreen({route ,navigation}) {
           <BackButton onPress={() => navigation.navigate('Home')}>
             <BackIcon source={require('../../../assets/back.png')} />
           </BackButton>
-          <MenuButton>
+          <MenuButton onPress={() => handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass)}>
             <MenuIcon source={require('../../../assets/menu.png')} />
           </MenuButton>
+          
         </TopRow>
         <BottomRow>
           <SchoolName>{version === 'School' ? schoolName : `${selectedClass.grade}학년 ${selectedClass.order}반`}</SchoolName>
@@ -82,7 +91,7 @@ export default function BoardScreen({route ,navigation}) {
           </RegularText>
         </BottomRow>
       </Header>
-
+      
       <MemberSection>
         <MemberText>
           멤버 <BoldNumber>{memberCount}</BoldNumber>
@@ -109,6 +118,8 @@ export default function BoardScreen({route ,navigation}) {
           글쓰기  <WritingIcon source={require('../../../assets/writing.png')} />
         </WriteButtonText>
       </WriteButton>
+      <MemberModal modalVisible={modalVisible} setModalVisible={setModalVisible} schoolMember={schoolMember} classMember={classMember} version={version} selectedClass={selectedClass}></MemberModal>
+
     </Container>
   );
 }

@@ -100,10 +100,10 @@ export const useAsync = () => {
     }
   }
 
-  const handleDelete = async() => {
+  const handleDelete = async(deletePassword, setDeleteModalVisible) => {
     try {
       const response = await axios.post('https://reeun.store/member/delete/',{
-        password:"password123!"
+        password:deletePassword
       }, {
         headers:{
           Authorization : `Bearer ${user}`
@@ -112,6 +112,8 @@ export const useAsync = () => {
       })
       console.log("성공!")
       setUser(false);
+      setUserInfo([]);
+      setDeleteModalVisible(false);
     } catch (error) {
       console.log(error);
       console.log("에러!!");
@@ -145,16 +147,83 @@ export const useAsync = () => {
       })
       console.log(response.data);
     } catch (error) {
+      console.log(error.message );
+      console.log(user);
+    }
+  }
+
+  const getClassBoardPosts = async (selectedClass, setPostList) => {
+    try {
+      const response = await axios.get(`https://reeun.store/classboard/${userInfo.enrollYear}/${selectedClass.grade}/${selectedClass.order}/`,{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      setPostList(response.data.data);
+    } catch (error) {
+      console.log(error);
+      console.log(selectedClass)
+    }
+  }
+
+  const getSchoolMember = async(setSchoolMember) => {
+    try {
+      const response = await axios.get("https://reeun.store/member/getschoolmembers/",{
+        headers:{
+          Authorization: `Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      setSchoolMember(response.data.data);
+    } catch (error) {
+      console.log(error);
+      console.log("실패!")
+      console.log(user);
+    }
+  }
+
+  const getClassMember = async(setClassMember,selectedClass) => {
+    try {
+      const response = await axios.get(`https://reeun.store/member/getclassmembers/${selectedClass.grade}/`,{
+      
+        headers:{
+          Authorization: `Bearer ${user}`
+        }
+      })
+      console.log(response);
+      setClassMember(response.data.data);
+    } catch (error) {
+      console.log(error);
+      console.log("학급 유저 목록 조회 실패!")
+    }
+  }
+
+  const openNicknameToSchool = async() => {
+    try {
+      const response = await axios.post("https://reeun.store/member/openNicknameToSchool/",{},{
+        headers:{
+          Authorization: `Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+    } catch (error) {
       console.log(error);
       console.log(user);
     }
   }
 
-  const getClassBoardPosts = async () => {
+  const openNicknameToClass = async() => {
     try {
-      const response = await axios.get(`https://reeun.store/classboard/${2011}/${4}/${1}/ `)
+      const response = await axios.post("https://reeun.store/member/openNicknameToClass/",{grade:2},{
+        headers:{
+          Authorization: `Bearer ${user}`
+        }
+      })
+      console.log(response.data);
     } catch (error) {
       console.log(error);
+      console.log(user);
     }
   }
 
@@ -168,7 +237,11 @@ export const useAsync = () => {
     handleDelete,
     handleSetClass,
     getSchoolBoardPosts,
-    getClassBoardPosts
+    getClassBoardPosts,
+    getSchoolMember,
+    getClassMember,
+    openNicknameToSchool,
+    openNicknameToClass
 
   }
 }
