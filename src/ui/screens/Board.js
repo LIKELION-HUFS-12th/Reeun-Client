@@ -9,7 +9,6 @@ import MemberModal from '../components/MemberModal';
 import { useBoard } from '../../hooks/useBoard';
 
 export default function BoardScreen({route ,navigation}) {
-  const memberCount = 11;
   const {user} = useUserStore();
   const {userInfo} = useUserInfoStore();
   const schoolName = userInfo.school.school_name.split("초등학교");
@@ -21,6 +20,8 @@ export default function BoardScreen({route ,navigation}) {
   const [schoolMember, setSchoolMember] = useState([]);
   const [classMember, setClassMember] = useState([]);
   const [postList, setPostList] = useState([]);
+  const memberCount = version === "School" ? schoolMember.length : classMember.length;
+
 
   // const postList = [{"id": 1,
   //     "user": "mutsa",

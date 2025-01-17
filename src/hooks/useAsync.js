@@ -10,7 +10,6 @@ export const useAsync = () => {
   const handleSignUp = async (setIsComplete, userInfo,setUserInfo, presentValue, setPresentValue) => {
     // setStep(prev => prev + 1)
     // setUserInfo((prev) => [...prev, presentValue])
-    setUserInfo((prev) => [...prev,presentValue]);
     setPresentValue("");
     try {
       const response = await axios.post("https://reeun.store/member/signup/",{

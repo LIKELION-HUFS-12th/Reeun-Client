@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import styled from 'styled-components/native'
 import {useAsync} from '../../hooks/useAsync'
@@ -12,6 +12,13 @@ const SignUpMain = ({step, setStep, setIsComplete}) => {
   const [presentValue, setPresentValue] = useState("");
   const { handleSignUp } = useAsync();
   const {handleStep, handlePresentValue} = useSingUp();
+
+  useEffect(() => {
+    if (userInfo.length===3) {
+      // 상태값이 변경된 후 API 호출
+      handleSignUp(setIsComplete, userInfo,setUserInfo, presentValue, setPresentValue)
+    }
+  }, [userInfo]);
 
 
   const handleQuestion = () => {
@@ -28,7 +35,7 @@ const SignUpMain = ({step, setStep, setIsComplete}) => {
         ></InputBox>
       </InputArea>
       <View style={{justifyContent:'center', alignItems:'center', marginTop:250}}>
-          <NextStepButton onPress={() => {step===3 ? handleSignUp(setIsComplete, userInfo, setUserInfo, presentValue,setPresentValue):handleStep(setStep, setUserInfo, presentValue, setPresentValue)}}>
+          <NextStepButton onPress={() => { step===3 ? setUserInfo((prev) => [...prev,presentValue]):handleStep(setStep, setUserInfo, presentValue, setPresentValue, step)}}>
             <NextText >{ step === 3 ? "가입하기" : "다음 단계로"}</NextText>
           </NextStepButton>
         </View>

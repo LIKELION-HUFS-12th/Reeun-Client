@@ -10,10 +10,13 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  Button
+  Button,
+  Dimensions
 } from 'react-native';
 import axios from 'axios';
 import SignUpStep from '../components/SignUpStep';
+
+const height = Dimensions.get('screen').height;
 
 const SetSchool = ({navigation}) => {
   const {userInfo, setUserInfo} = useUserInfoStore();
@@ -238,7 +241,7 @@ const SetSchool = ({navigation}) => {
                 return(
                   <>
                   
-                    <SafeAreaView style={{backgroundColor:"white"}}>
+                    <SafeAreaView style={{backgroundColor:"white", height:height}}>
                       <View style={{marginLeft:30}}>
                         <SignUpStep step={step} setStep={setStep}/>
                       </View>
@@ -392,17 +395,22 @@ const SchoolItem = styled.TouchableOpacity`
 
 const SchoolText = styled.Text`
   font-size: 16px;
+  font-weight:600;
 `;
 
 const CloseButton = styled.TouchableOpacity`
-  background-color: #007bff;
+  background-color: #FB5E3D;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 10px;
   align-items: center;
+  height:45px;
+  display:flex;
+  justify-content:center;
 `;
 
 const CloseText = styled.Text`
   color: #fff;
   font-size: 16px;
+  font-weight:700;
 `;
