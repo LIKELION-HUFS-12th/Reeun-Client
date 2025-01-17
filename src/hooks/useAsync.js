@@ -206,23 +206,41 @@ export const useAsync = () => {
         }
       })
       console.log(response.data);
+      AsyncStorage.setItem('isAnonymousAtSchool','false');
     } catch (error) {
       console.log(error);
       console.log(user);
     }
   }
 
-  const openNicknameToClass = async() => {
+  const openNicknameToClass = async(selectedClass) => {
     try {
-      const response = await axios.post("https://reeun.store/member/openNicknameToClass/",{grade:2},{
+      const response = await axios.post("https://reeun.store/member/openNicknameToClass/",{grade:selectedClass.grade},{
         headers:{
           Authorization: `Bearer ${user}`
         }
       })
       console.log(response.data);
+      AsyncStorage.setItem('isAnonymousAtClass','false');
+
     } catch (error) {
       console.log(error);
       console.log(user);
+    }
+  }
+
+  const setUserName = async(nickname) => {
+    try {
+      const response = await axios.post("https://reeun.store/member/setname/",{
+        name:nickname
+      },{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -240,7 +258,8 @@ export const useAsync = () => {
     getSchoolMember,
     getClassMember,
     openNicknameToSchool,
-    openNicknameToClass
+    openNicknameToClass,
+    setUserName
 
   }
 }

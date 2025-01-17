@@ -17,9 +17,11 @@ const MyPage = ({navigation}) => {
   const class_num = [1, "", 3]
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
-  const {handleLogOut, handleDelete, getUserInfo} = useAsync();
+  const {handleLogOut, handleDelete, getUserInfo, setUserName} = useAsync();
   const {goToLogoutAlert, goToDeleteAlert, deleteModalVisible, setDeleteModalVisible} = useMyPage();
   const [deletePassword, setDeletePassword] = useState("");
+  const [nickname,setNickname] = useState("");
+  const [editProfile, setEditProfile] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -37,13 +39,23 @@ const MyPage = ({navigation}) => {
         </TouchableOpacity>
         <MyPageText>마이페이지</MyPageText>
       </MyPageHeader>
-      <EditButton>
+      <EditButton onPress={() => {; setEditProfile(true)}}>
           <Image source={require("../../../assets/edit_icon.png")}/>
           <Text>프로필 편집</Text>
       </EditButton>
       <ProfileContents>
         <ProfileImg source={require('../../../assets/profile_img.png')} />
-        <UserName>{user ? userInfo.username:"로그인해주세요"}</UserName>
+        <Text style={{fontWeight:700}}>id:{user ? userInfo.username:"로그인해주세요"}</Text>
+        {editProfile ? 
+        <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+        <TextInput placeholder='닉네임을 입력해주세요' style={{padding:10}} value={nickname} onChange={(e) => setNickname(e.nativeEvent.text)}></TextInput>
+        <TouchableOpacity style={{padding:10}} onPress={() => {setUserName(nickname); setEditProfile(false)}}>
+          <Text style={{color:"#FB5E3D", fontWeight:900, fontSize:16}}>확인</Text>
+        </TouchableOpacity>
+        </View>
+        :
+        <UserName>{user ? userInfo.name ? userInfo.name : "닉네임을 등록해주세요" : null}</UserName>
+          } 
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
           {!user ? "":userInfo.school ? userInfo.school.school_name
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>

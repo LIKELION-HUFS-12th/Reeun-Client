@@ -5,9 +5,10 @@ import styled from 'styled-components/native'
 const ClassEl = ({grade, order, grade_text, key ,navigation, selectedClass, setSelectedClass}) => {
   return (
     <ClassElBody key={key} onPress={() => {
-      setSelectedClass({grade:grade, order:order})
-      navigation.navigate("Board", {version:"Class", selectedClass:selectedClass});
-      console.log(selectedClass);
+      const updatedClass = {grade:grade, order:order}
+      setSelectedClass(updatedClass)
+      navigation.navigate("Board", {version:"Class", selectedClass:updatedClass});
+      console.log(updatedClass);
       
       }}>
       <GradeBody>

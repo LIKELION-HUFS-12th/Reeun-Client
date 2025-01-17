@@ -1,13 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {  Dimensions, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 import Modal from 'react-native-modal';
 import { useUserInfoStore } from '../../logic/store/user';
 import { useAsync } from '../../hooks/useAsync';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass}) => {
   const {userInfo} = useUserInfoStore();
   const {openNicknameToSchool, openNicknameToClass} = useAsync();
+  
+
+  // useEffect(
+    
+  //     setIsAnonymous(getAnonymous());
+    
+  // ,[])
 
 
 
@@ -54,9 +64,12 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
             </>)
           })}
         </ScrollView>
-        <TouchableOpacity onPress={() => version==="School" ? openNicknameToSchool() : openNicknameToClass()} style={{marginTop:200, position:'absolute', left:150, bottom:20}}>
+         <></>
+        
+        <TouchableOpacity onPress={() => version==="School" ? openNicknameToSchool() : openNicknameToClass(selectedClass)} style={{marginTop:200, position:'absolute', left:150, bottom:20}}>
           <Text>내 정보 공개하기</Text>
         </TouchableOpacity>
+          
       </Modal>
     </SafeAreaView>
   )

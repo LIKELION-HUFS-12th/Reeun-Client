@@ -21,6 +21,14 @@ export default function BoardScreen({route ,navigation}) {
   const [classMember, setClassMember] = useState([]);
   const [postList, setPostList] = useState([]);
   const memberCount = version === "School" ? schoolMember.length : classMember.length;
+  const [isAnonymous, setIsAnonymous] = useState(true);
+
+  const getAnonymous = async(version) => {
+    const result = await AsyncStorage.getItem(version==='School' ? 'isAnonymousAtSchool' : 'isAnonymousAtClass');
+    console.log(isAnonymous)
+    console.log('호출!')
+    return(result);
+  }
 
 
   // const postList = [{"id": 1,
@@ -66,8 +74,14 @@ export default function BoardScreen({route ,navigation}) {
       }
       
       console.log(schoolMember);
-    },[user])
+      console.log(isAnonymous)
+    },[user, selectedClass])
   )
+
+  useEffect(() => {
+    getClassBoardPosts(selectedClass, setPostList);
+  }, [selectedClass])
+  
 
 
   
@@ -80,7 +94,7 @@ export default function BoardScreen({route ,navigation}) {
           <BackButton onPress={() => navigation.navigate('Home')}>
             <BackIcon source={require('../../../assets/back.png')} />
           </BackButton>
-          <MenuButton onPress={() => handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass)}>
+          <MenuButton onPress={() => handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass, getAnonymous, setIsAnonymous)}>
             <MenuIcon source={require('../../../assets/menu.png')} />
           </MenuButton>
           
