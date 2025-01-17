@@ -18,6 +18,8 @@ import Login_Contents from './src/ui/screens/Login_Contents';
 import Signup_Contents from './src/ui/screens/Signup_Contents';
 import SetSchool from './src/ui/screens/SetSchool';
 import SetClass from './src/ui/screens/SetClass';
+import BoardScreen from './src/ui/screens/Board';
+import WritingScreen from './src/ui/screens/Writing';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +35,8 @@ function AppNavigator() {
       <Stack.Screen name='SignUpContents' component={Signup_Contents} options={{headerShown:false}}/>
       <Stack.Screen name='SetSchool' component={SetSchool} options={{headerShown:false}}/>
       <Stack.Screen name='SetClass' component={SetClass} options={{headerShown:false}}/>
+      <Stack.Screen name='Board' component={BoardScreen} options={{headerShown:false}}/>
+      <Stack.Screen name="Writing" component={WritingScreen} options={{headerShown:false}}/>
     </Stack.Navigator>
   );
 }

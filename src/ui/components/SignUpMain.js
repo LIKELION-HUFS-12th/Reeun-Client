@@ -1,48 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import styled from 'styled-components/native'
-import axios from 'axios';
+import {useAsync} from '../../hooks/useAsync'
+import { useSingUp } from '../../hooks/useSignUp'
 
 const SignUpMain = ({step, setStep, setIsComplete}) => {
-  const questionEl = ["아이디", "비밀번호", "닉네임"]
-  const questionList = ["아이디를", "비밀번호를", "닉네임을"]
+  const questionEl = ["아이디", "비밀번호", "비밀번호"]
+  const questionList = ["아이디를", "비밀번호를", "비밀번호를 다시한번"]
   const placeholderText = `${questionList[step-1]} 입력하세요`
   const [userInfo, setUserInfo] = useState([]);
   const [presentValue, setPresentValue] = useState("");
+  const { handleSignUp } = useAsync();
+  const {handleStep, handlePresentValue} = useSingUp();
 
-  
-  const handleStep = () => {
-    setStep(prev => prev + 1)
-    setUserInfo((prev) => [...prev, presentValue])
-    
-    console.log(presentValue);
-    setPresentValue("");
-    console.log(userInfo)
-  }
-
-  const handlePresentValue = (event) => {
-    setPresentValue(event.nativeEvent.text);
-    console.log(event.nativeEvent.text);
-    
-  }
-
-  const handleSignUp = async () => {
-    // setStep(prev => prev + 1)
-    // setUserInfo((prev) => [...prev, presentValue])
-    console.log(userInfo);
-    try {
-      response = await axios.post("https://reeun.store/member/signup/",{
-        username:userInfo[0],
-        password1:userInfo[1],
-        password2:userInfo[2]
-      })
-      console.log(response.data.user);
-      setIsComplete(true);
-    } catch (error) {
-      console.log(error)
+  useEffect(() => {
+    if (userInfo.length===3) {
+      // 상태값이 변경된 후 API 호출
+      handleSignUp(setIsComplete, userInfo,setUserInfo, presentValue, setPresentValue)
     }
-    
-  }
+  }, [userInfo]);
 
 
   const handleQuestion = () => {
@@ -51,11 +27,15 @@ const SignUpMain = ({step, setStep, setIsComplete}) => {
       <InputArea>
         <InputTitle>{questionEl[step-1]}</InputTitle>
         <InputBox
-          placeholder={placeholderText} value={presentValue} onChange={(event) => {handlePresentValue(event)}}
+          placeholder={placeholderText}
+          value={presentValue}
+          onChange={(event) => {handlePresentValue(event, setPresentValue)}}
+          secureTextEntry={ step === 1 ? false : true}
+        
         ></InputBox>
       </InputArea>
       <View style={{justifyContent:'center', alignItems:'center', marginTop:250}}>
-          <NextStepButton onPress={step===3 ? handleSignUp:handleStep}>
+          <NextStepButton onPress={() => { step===3 ? setUserInfo((prev) => [...prev,presentValue]):handleStep(setStep, setUserInfo, presentValue, setPresentValue, step)}}>
             <NextText >{ step === 3 ? "가입하기" : "다음 단계로"}</NextText>
           </NextStepButton>
         </View>

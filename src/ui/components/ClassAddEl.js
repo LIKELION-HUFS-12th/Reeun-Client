@@ -1,28 +1,24 @@
 import React from 'react'
 import { Text, TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
+import { useUserStore } from '../../logic/store/user'
 
-const ClassEl = ({grade, order, grade_text, key ,navigation, selectedClass, setSelectedClass}) => {
+const ClassAddEl = ({navigation}) => {
+  const {user} = useUserStore();
+
   return (
-    <ClassElBody key={key} onPress={() => {
-      const updatedClass = {grade:grade, order:order}
-      setSelectedClass(updatedClass)
-      navigation.navigate("Board", {version:"Class", selectedClass:updatedClass});
-      console.log(updatedClass);
-      
-      }}>
-      <GradeBody>
-        <Text style={{color:"white", fontSize:"20", fontWeight:"800"}}>{grade}</Text>
-      </GradeBody>
-      <GradeText>{grade_text}</GradeText>
+    <ClassElBody onPress={() => {navigation.navigate(user?'SetClass':'Login')}}>
+      <GradeText>새로운       반을 등록하세요</GradeText>
+      <Text style={{color:'#FB5E3D', fontSize:'25', fontWeight:"700"}}>+</Text>
     </ClassElBody>
     
   )
 }
 
-export default ClassEl
+export default ClassAddEl;
 
 const ClassElBody = styled.TouchableOpacity`
+  
   background-color:#F5F5F5;
   width:120px;
   height:110px;
@@ -30,6 +26,8 @@ const ClassElBody = styled.TouchableOpacity`
   padding:20px;
   box-sizing:border-box;
   margin:0 10px;
+  display:flex;
+  justify-content:center;
 `
 
 const GradeBody = styled.View`
@@ -41,10 +39,13 @@ const GradeBody = styled.View`
   justify-content:center;
   align-items:center;
   margin-bottom:10px;
+  flex-wrap:wrap;
+  
 `
 
 const GradeText = styled.Text`
-  color:#898989;
-  font-size:20px;
+  word-break:keep-all;
+  color:#6c6c6c;
+  font-size:18px;
   font-weight:800;
 `

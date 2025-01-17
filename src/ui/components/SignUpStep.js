@@ -7,9 +7,9 @@ const SignUpStep = ({step, setStep}) => {
 
   return (
     <StepContents>
-      {steps.map(el => {
+      {steps.map((el,index) => {
         return(
-          <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+          <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} key={index}>
             
             <StepBox style={{backgroundColor:el===step ? "#FB5E3D" : "#f4f4f4"}}>
               <StepNum style={{color:el===step? "white" : "#898989"}}>
