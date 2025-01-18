@@ -1,11 +1,13 @@
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Dimensions, Image, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 
+const height = Dimensions.get('screen').height;
+
 const Signup_Complete = ({navigation}) => {
   return (
-    <SafeAreaView style={{justifyContent:'center', alignItems:'center', gap:'150'}}>
+    <SafeAreaView style={{justifyContent:'center', alignItems:'center', gap:'150', backgroundColor:"white", height:height}}>
       <Contents>
         <View style={{justifyContent:'center', alignItems:'center', gap:'25'}}>
           <TitleText>환영해요!</TitleText>
@@ -16,7 +18,7 @@ const Signup_Complete = ({navigation}) => {
         </View>
         <MainText>리운과 함께{"\n"}그리운 그때로 돌아가봐요</MainText>
       </Contents>
-      <StartButton onPress={() => navigation.navigate('Tabs')}>
+      <StartButton onPress={() => navigation.navigate('Login')}>
         <StartText>시작하기</StartText>
       </StartButton>
     </SafeAreaView>

@@ -1,44 +1,68 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, TouchableOpacity, Image } from 'react-native';
+import { Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
+import useFetchChatRooms from '../../logic/hooks/useFetchChatRooms';
 
 export default function ChatListScreen({ navigation }) {
-  const chatRooms = [
-    { id: '1', title: '나누군지아는사람?', description: '굿' },
-    { id: '2', title: '해커스 토플 인터미디엇 5권', description: '대화를 시작해보세요.' },
-  ];
+  const { chatRooms, loading, error } = useFetchChatRooms();
 
   return (
     <Screen>
       <Header>
         <HeaderTitle>쪽지</HeaderTitle>
       </Header>
-      <Content>
-        {chatRooms.map((room) => (
-          <TouchableOpacity
-            key={room.id}
-            onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
-          >
-            <ChatRoom>
-              <Avatar source={require('../../../assets/comment_profile.png')} />
-              <ChatInfo>
-                <ChatTitle>{room.title}</ChatTitle>
-                <ChatDescription>{room.description}</ChatDescription>
-              </ChatInfo>
-            </ChatRoom>
-          </TouchableOpacity>
-        ))}
-      </Content>
+
+      {/* 로딩 상태 */}
+      {loading && (
+        <LoadingContainer>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </LoadingContainer>
+      )}
+
+      {/* 에러 상태 */}
+      {error && (
+        <ErrorContainer>
+          <ErrorText>{error}</ErrorText>
+        </ErrorContainer>
+      )}
+
+      {/* 빈 목록 상태 */}
+      {!loading && !error && chatRooms.length === 0 && (
+        <EmptyContainer>
+          <EmptyText>채팅방이 없습니다. 새로운 대화를 시작해보세요!</EmptyText>
+        </EmptyContainer>
+      )}
+
+      {/* 채팅 목록 */}
+      {!loading && !error && chatRooms.length > 0 && (
+        <Content>
+          {chatRooms.map((room) => (
+            <TouchableOpacity
+              key={room.id}
+              onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
+            >
+              <ChatRoom>
+                <Avatar source={require('../../../assets/comment_profile.png')} />
+                <ChatInfo>
+                  <ChatTitle>{room.title}</ChatTitle>
+                  <ChatDescription>{room.description}</ChatDescription>
+                </ChatInfo>
+              </ChatRoom>
+            </TouchableOpacity>
+          ))}
+        </Content>
+      )}
     </Screen>
   );
 }
 
+// 창 크기에 맞게
 const { width } = Dimensions.get('window');
 
+// 스타일링
 const Screen = styled.View`
   flex: 1;
   background-color: #ffffff;
-  width: 100%;
 `;
 
 const Header = styled.View`
@@ -64,8 +88,8 @@ const ChatRoom = styled.View`
   padding: 15px;
   border-bottom-width: 1px;
   border-bottom-color: #e0e0e0;
-  width: ${width - 40}px; /* 화면 크기를 기준으로 조정 */
-  margin: 0 auto; /* 가운데 정렬 */
+  width: ${width - 40}px;
+  margin: 0 auto;
 `;
 
 const Avatar = styled.Image`
@@ -88,4 +112,32 @@ const ChatTitle = styled.Text`
 const ChatDescription = styled.Text`
   font-size: 14px;
   color: #666666;
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ErrorContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ErrorText = styled.Text`
+  font-size: 16px;
+  color: red;
+`;
+
+const EmptyContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EmptyText = styled.Text`
+  font-size: 16px;
+  color: #888888;
 `;

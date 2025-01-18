@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import { useUserInfoStore, useUserStore } from '../../logic/store/user'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   View,
   Text,
@@ -10,12 +10,15 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  Button
+  Button,
+  Dimensions
 } from 'react-native';
 import axios from 'axios';
 import SignUpStep from '../components/SignUpStep';
 
-const SetSchool = () => {
+const height = Dimensions.get('screen').height;
+
+const SetSchool = ({navigation}) => {
   const {userInfo, setUserInfo} = useUserInfoStore();
     const {user, setUser} = useUserStore();
     const [isModalVisible, setModalVisible] = useState(false);
@@ -23,9 +26,13 @@ const SetSchool = () => {
     const [selectedRegion, setSelectedRegion] = useState("");
     const [schoolInfo, setSchoolInfo] = useState([]);
     const[step, setStep] = useState(1);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [enrollYear, setEnrollYear] = useState("");
+    const [allSchoolList, setAllSchoolList] = useState([]);
+    
+    
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const regionList = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시','경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도', '재외한국학교']
+
 
     // const getSchoolInfo = async () => {
     //   try {
@@ -38,16 +45,17 @@ const SetSchool = () => {
     // }
   
 
-    // useEffect(() => {
-    //   getSchoolInfo();
-    // }, [selectedRegion])
+    useEffect(() => {
+  
+    }, [])
 
-
+  
     const handleNextStep = async(selectedRegion) => {
       if(step===1){
         try {
           const response = await axios.get("https://reeun.store/school/getallschool/");
           const data = response.data.data;
+          setAllSchoolList(data);
           const schoolList = data.filter((school) => school.city === selectedRegion);
           const schoolNames = schoolList.map(item => item.school_name);
           setSchoolInfo(schoolNames);
@@ -56,20 +64,39 @@ const SetSchool = () => {
           console.log(error)
         }
       } else if(step===2){
+        const selectedSchoolInfo = allSchoolList.filter((school) => school.school_name === selectedSchool);
+        const selectedSchoolId = selectedSchoolInfo[0].id;
         try {
           const response = await axios.post("https://reeun.store/member/setschool/",{
-            schoolId:270
+            schoolId:selectedSchoolId
           },{
             headers:{
               Authorization:`Bearer ${user}`
             }
           })
           console.log(response.data);
+          setStep(3);
         } catch (error) {
           console.log(error);
+          console.log(selectedSchoolId);
           
         }
-        setStep(3);
+        
+      }else if(step===3){
+        try {
+          const response = await axios.post("https://reeun.store/member/setenrollyear/",{
+            enrollYear:enrollYear
+          },{
+            headers:{
+              Authorization:`Bearer ${user}`
+            }
+          });
+          console.log('성공!');
+          navigation.navigate('Home')
+        } catch (error) {
+          console.log(error);
+          console.log(typeof(enrollYear));
+        }
       }
       
     }
@@ -188,15 +215,33 @@ const SetSchool = () => {
                   };
                 
                   const handleConfirm = (date) => {
-                    setSelectedDate(dayjs(date));
+                    console.warn("A date has been picked: ", typeof(date.getFullYear()));
+                    const year = date.getFullYear();
+                    setEnrollYear(year);
                     hideDatePicker();
                   };
-                  
-                }
+                
+                  return (
+                    <View>
+                      <View style={{backgroundColor:'#f4f4f4',padding:15, width:290,height:50,borderRadius:10,fontSize:16, marginLeft:40, marginTop:-25, position:'relative'}}>
+                        <Button title="Show Date Picker" onPress={showDatePicker} style={{width:400}}/>
+                        <Text style={{color:"#666", fontSize:16, position:'absolute', top:18, left:'15'}}>{enrollYear?enrollYear:"입학년도를 입력해주세요."}</Text>
+                        </View>
+                      <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                      />
+                      
+                    </View>
+                  );
+                };
+                
                 return(
                   <>
                   
-                    <SafeAreaView style={{backgroundColor:"white"}}>
+                    <SafeAreaView style={{backgroundColor:"white", height:height}}>
                       <View style={{marginLeft:30}}>
                         <SignUpStep step={step} setStep={setStep}/>
                       </View>
@@ -224,7 +269,7 @@ const SetSchool = () => {
                       }
                       </View>
                       </View>
-                      <View style={{justifyContent:'center', alignItems:'center', marginTop:280,}}>
+                      <View style={{justifyContent:'center', alignItems:'center', marginTop:step===3?305:280,}}>
                           <NextStepButton onPress={() => step===handleNextStep(selectedRegion)}>
                             <NextText>다음 단계로</NextText>
                           </NextStepButton>
@@ -314,6 +359,7 @@ padding:15px 20px;
    height:50px;
    border-radius:10px;
    font-size:16px;
+ 
 `;
 
 const InputText = styled.Text`
@@ -349,17 +395,22 @@ const SchoolItem = styled.TouchableOpacity`
 
 const SchoolText = styled.Text`
   font-size: 16px;
+  font-weight:600;
 `;
 
 const CloseButton = styled.TouchableOpacity`
-  background-color: #007bff;
+  background-color: #FB5E3D;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 10px;
   align-items: center;
+  height:45px;
+  display:flex;
+  justify-content:center;
 `;
 
 const CloseText = styled.Text`
   color: #fff;
   font-size: 16px;
+  font-weight:700;
 `;

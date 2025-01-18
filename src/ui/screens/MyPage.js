@@ -1,94 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import ClassEl from '../components/ClassEl'
 import { useUserInfoStore, useUserStore } from '../../logic/store/user'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAsync } from '../../hooks/useAsync'
+import { useMyPage } from '../../hooks/useMyPage'
+import { useFocusEffect } from '@react-navigation/native'
+import ClassAddEl from '../components/ClassAddEl'
+import Modal from 'react-native-modal'
+
 
 const MyPage = ({navigation}) => {
   const class_num = [1, "", 3]
   const {user, setUser} = useUserStore();
   const {userInfo, setUserInfo} = useUserInfoStore();
+  const {handleLogOut, handleDelete, getUserInfo, setUserName} = useAsync();
+  const {goToLogoutAlert, goToDeleteAlert, deleteModalVisible, setDeleteModalVisible} = useMyPage();
+  const [deletePassword, setDeletePassword] = useState("");
+  const [nickname,setNickname] = useState("");
+  const [editProfile, setEditProfile] = useState(false);
 
-  
-
-  const handleLogOut = async() => {
-    try {
-      const response = await axios.post('https://reeun.store/member/logout/',{}, {
-        headers:{
-          Authorization : `Bearer ${user}`
-        }
-      
-      })
-      console.log("성공!");
-      setUserInfo([]);
-      setUser(false);
-      console.log(userInfo);
-      console.log(user);
-    } catch (error) {
-      console.log(error);
-      console.log("에러!!");
-    }
-  }
-
-  const handleDelete = async() => {
-    try {
-      const response = await axios.post('https://reeun.store/member/delete/',{
-        password:"password123!"
-      }, {
-        headers:{
-          Authorization : `Bearer ${user}`
-        }
-      
-      })
-      console.log("성공!")
-      setUser(false);
-    } catch (error) {
-      console.log(error);
-      console.log("에러!!");
-    }
-  }
-
-  const goToLogoutAlert = () => {
-    Alert.alert("로그아웃 하시겠어요?", "", [
-      {
-        //style을 통해 알러트가 닫힘
-        style: "cancel",
-        text: "아니요"
-      },
-      {
-        text: "네",
-        //버튼을 누르면 동작할 로직을 직접 적어줄 수도 있음
-        onPress: () => handleLogOut(),
-      }
-      //버튼관리
-    ])
-  }
-
-  const goToDeleteAlert = () => {
-    Alert.alert("탈퇴하시겠어요?", "모든 정보가 사라집니다", [
-      {
-        //style을 통해 알러트가 닫힘
-        style: "cancel",
-        text: "아니요"
-      },
-      {
-        text: "네",
-        //버튼을 누르면 동작할 로직을 직접 적어줄 수도 있음
-        onPress: () => handleLogOut(),
-      }
-      //버튼관리
-    ])
-  }
-  
-  useEffect(() => {
-    setUserInfo([]);
-  
-  }, [user])
-  
-  
+  useFocusEffect(
+    useCallback(() => {
+      getUserInfo();
+    },[user])
+  )
   
 
   return (
@@ -100,15 +39,25 @@ const MyPage = ({navigation}) => {
         </TouchableOpacity>
         <MyPageText>마이페이지</MyPageText>
       </MyPageHeader>
-      <EditButton>
+      <EditButton onPress={() => {; setEditProfile(true)}}>
           <Image source={require("../../../assets/edit_icon.png")}/>
           <Text>프로필 편집</Text>
       </EditButton>
       <ProfileContents>
         <ProfileImg source={require('../../../assets/profile_img.png')} />
-        <UserName>{user ? userInfo.username:"로그인해주세요"}</UserName>
+        <Text style={{fontWeight:700}}>id:{user ? userInfo.username:"로그인해주세요"}</Text>
+        {editProfile ? 
+        <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+        <TextInput placeholder='닉네임을 입력해주세요' style={{padding:10}} value={nickname} onChange={(e) => setNickname(e.nativeEvent.text)}></TextInput>
+        <TouchableOpacity style={{padding:10}} onPress={() => {setUserName(nickname); setEditProfile(false)}}>
+          <Text style={{color:"#FB5E3D", fontWeight:900, fontSize:16}}>확인</Text>
+        </TouchableOpacity>
+        </View>
+        :
+        <UserName>{user ? userInfo.name ? userInfo.name : "닉네임을 등록해주세요" : null}</UserName>
+          } 
         <UserSchool><Text style={{color:"#FB5E3D", fontWeight:"700"}}>
-          {userInfo.school ? userInfo.school.school_name
+          {!user ? "":userInfo.school ? userInfo.school.school_name
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
           </UserSchool>
       </ProfileContents>
@@ -126,31 +75,57 @@ const MyPage = ({navigation}) => {
         <Text style={{fontSize:'20', fontWeight:"700", marginLeft:"30", marginBottom:"15"}}>나의 반</Text>
         
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {class_num.map((num, index)=>{
-              return(
-              num === ""?
-              
-              <ClassEl grade={index+1} grade_text={"입력하기"}></ClassEl>
+            {user ? userInfo.classList?.length > 0 ? 
+          <>
+          { userInfo.classList.map((el, index) => {
+            return(
+            <ClassEl grade={el.grade} grade_text={`${el.grade}학년 ${el.order}반`} key={index}></ClassEl>
+            )
+          })
+            
+          }
+          <ClassAddEl navigation={navigation}/>
+          </>
+          :
+          <ClassAddEl navigation={navigation} />
 
-              :
-              <ClassEl grade={index+1} grade_text={`${index+1}학년 ${num}반`}/>
-              )
-            })}
+          :
+          <ClassAddEl navigation={navigation} />}
           </ScrollView>
         
       </ViewMyClass>
       <View style={{ marginTop:user?'50':'90'}}>
-      {user ? <LogOutButton onPress={goToLogoutAlert}>
+      {user ? <LogOutButton onPress={() => {goToLogoutAlert(handleLogOut)}}>
         <LogOutText>로그아웃</LogOutText>
       </LogOutButton>
       :
       <></>}
       
-      <CancleButton onPress={() => navigation.navigate('Login')}>
+      <CancleButton onPress={() => user ? goToDeleteAlert(handleDelete) : navigation.navigate('Login')}>
         <CancleText>{user ? "탈퇴하기" : "로그인하기"}</CancleText>
       </CancleButton>
       </View>
-      
+      <SafeAreaView>
+        
+        <Modal isVisible={deleteModalVisible} animationIn={'fadeIn'} animationOut={'fadeOut'} onBackdropPress={() => setDeleteModalVisible(false)} >
+          <View style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+          <View style={{width:270, height:150, backgroundColor:'#EFEFEF', position:'absolute', top:"-50", justifyContent:'center', alignItems:'center',
+            borderRadius:15, 
+          }}>
+            <Text style={{fontSize:'18', fontWeight:600, textAlign:'center', marginBottom:10}} >
+              {"탈퇴하시려면 비밀번호를 \n입력해주세요"}
+            </Text>
+            
+            <TextInput secureTextEntry={true} style={{backgroundColor:"white", width:'200', padding:5, borderRadius:2,}} placeholder='비밀번호를 입력하세요' value={deletePassword} onChange={(e) => {setDeletePassword(e.nativeEvent.text)}}></TextInput>
+            <View style={{width:250, backgroundColor:"#B2B2B4", height:'.5', marginTop:'15'}}></View>
+            <TouchableOpacity onPress={() => handleDelete(deletePassword , setDeleteModalVisible)} style={{paddingVertical:15, paddingHorizontal:100, marginBottom:'-20'}}>
+              <Text style={{color:"#017BFF", fontSize:18, fontWeight:500}}>확인</Text>
+            </TouchableOpacity>
+          </View>
+          </View>
+        </Modal>
+        
+      </SafeAreaView>
     </SafeAreaView>
   )
 }
@@ -240,6 +215,7 @@ const MyCommentButton = styled.TouchableOpacity`
 const ViewMyClass = styled.View`
   display:flex;
   margin-top:40px;
+  margin-bottom:-20px;
 `
 
 const ClassList = styled.View`
@@ -260,6 +236,7 @@ const LogOutText = styled.Text`
 
 const CancleButton = styled.TouchableOpacity`
   margin-left:30px;
+  margin-bottom:20px;
   
 `
 
