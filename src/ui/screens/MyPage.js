@@ -215,6 +215,7 @@ const MyCommentButton = styled.TouchableOpacity`
 const ViewMyClass = styled.View`
   display:flex;
   margin-top:40px;
+  margin-bottom:-20px;
 `
 
 const ClassList = styled.View`
@@ -235,6 +236,7 @@ const LogOutText = styled.Text`
 
 const CancleButton = styled.TouchableOpacity`
   margin-left:30px;
+  margin-bottom:20px;
   
 `
 
