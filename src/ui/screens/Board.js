@@ -10,19 +10,25 @@ export default function BoardScreen({ navigation }) {
   return (
     <Container>
       <Header>
-        <BackButton onPress={() => navigation.goBack()}>
-          <BackIcon source={require('../../../assets/back.png')} />
-        </BackButton>
-        <SchoolName>{schoolName}</SchoolName>
-        <BoldText>초등학교 전체 커뮤니티 ({year})</BoldText>
-        <MenuButton>
-          <MenuIcon source={require('../../../assets/menu.png')} />
-        </MenuButton>
+        <TopRow>
+          <BackButton onPress={() => navigation.goBack()}>
+            <BackIcon source={require('../../../assets/back.png')} />
+          </BackButton>
+          <MenuButton>
+            <MenuIcon source={require('../../../assets/menu.png')} />
+          </MenuButton>
+        </TopRow>
+        <BottomRow>
+          <SchoolName>{schoolName}</SchoolName>
+          <RegularText>
+            초등학교 전체 커뮤니티 (<BoldText>{year}</BoldText>)
+          </RegularText>
+        </BottomRow>
       </Header>
 
       <MemberSection>
         <MemberText>
-          멤버 {memberCount}
+          멤버 <BoldNumber>{memberCount}</BoldNumber>
         </MemberText>
         <AddButton onPress={() => navigation.navigate('WriteScreen')}>
           <ButtonText>+</ButtonText>
@@ -55,14 +61,24 @@ const Container = styled.View`
   flex: 1;
   padding: 20px;
   background-color: ${(props) => props.theme.background};
+  position: relative;
 `;
 
 const Header = styled.View`
   margin-bottom: 15px;
-  margin-top: 40px;
+  margin-top: 50px;
+`;
+
+const TopRow = styled.View`
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+`;
+
+const BottomRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -75,10 +91,16 @@ const BackIcon = styled.Image`
 `;
 
 const SchoolName = styled.Text`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  margin-right: 5px;
+  margin-right: 3px;
   color: ${(props) => props.theme.main};
+`;
+
+const RegularText = styled.Text`
+  font-size: 18px;
+  font-weight: normal;
+  color: ${(props) => props.theme.text};
 `;
 
 const BoldText = styled.Text`
@@ -100,23 +122,29 @@ const MemberSection = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 `;
 
 const MemberText = styled.Text`
-  font-size: 15px;
+  font-size: 12px;
   color: ${(props) => props.theme.text};
   margin-right: 10px;
 `;
 
+const BoldNumber = styled.Text`
+  font-size: 12px;
+  font-weight: bold;
+  color: ${(props) => props.theme.main};
+`;
+
 const AddButton = styled.TouchableOpacity`
-  width: 25px;
-  height: 25px;
-  margin-top: -10px;
+  padding: 1px;
 `;
 
 const ButtonText = styled.Text`
-  font-size: 28px;
+  font-size: 12px;
   color: ${(props) => props.theme.main};
 `;
 
@@ -128,43 +156,44 @@ const Post = styled.View`
 `;
 
 const PostTitle = styled.Text`
-  font-size: 18px;
+  font-size: 15px;
   font-weight: bold;
   color: ${(props) => props.theme.text};
   margin-bottom: 5px;
 `;
 
 const PostPreview = styled.Text`
-  font-size: 16px;
+  font-size: 12px;
   color: ${(props) => props.theme.text};
   margin-bottom: 10px;
 `;
 
 const PostDate = styled.Text`
-  font-size: 14px;
+  font-size: 10px;
   color: #898989;
 `;
 
 const WriteButton = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.main};
-  padding: 15px;
+  padding: 10px;
   border-radius: 30px;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 30px;
-  left: 40%;
+  bottom: 20px;
+  left: 50%;
+  width: 96px;
+  margin-left: -58px;
 `;
 
 const WriteButtonText = styled.Text`
   color: #fff;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: bold;
 `;
 
 const WritingIcon = styled.Image`
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   margin-right: 8px;
 `;
 

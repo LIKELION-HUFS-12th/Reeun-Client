@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Image, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Image, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';  // ScrollView를 명시적으로 임포트
 import styled from 'styled-components/native';
 
 export default function WritingScreen({ navigation }) {
@@ -13,48 +13,55 @@ export default function WritingScreen({ navigation }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
-      <Container>
-        <Header>
-          <CloseButton onPress={() => navigation.goBack()}>
-            <Image source={require('../../../assets/close.png')} style={{ width: 15, height: 15 }} />
-          </CloseButton>
-          <TitleText>글쓰기</TitleText>
-          <DoneButton onPress={() => console.log('게시')} activeOpacity={0.7}>
-            <DoneText>완료</DoneText>
-          </DoneButton>
-        </Header>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Container>
+            <Header>
+              <TopRow>
+                <CloseButton onPress={() => navigation.goBack()}>
+                  <Image source={require('../../../assets/close.png')} style={{ width: 13, height: 13 }} />
+                </CloseButton>
+                <TitleText>글쓰기</TitleText>
+              </TopRow>
+              <DoneButton onPress={() => console.log('게시')} activeOpacity={0.7}>
+                <DoneText>완료</DoneText>
+              </DoneButton>
+            </Header>
 
-        <InputContainer>
-          <Input
-            placeholder="제목"
-            value={title}
-            onChangeText={setTitle}
-          />
+            <InputContainer>
+              <Input
+                placeholder="제목"
+                value={title}
+                onChangeText={setTitle}
+                placeholderTextColor="#000"
+              />
 
-          <ContentInput
-            placeholder="내용"
-            multiline
-            value={content}
-            onChangeText={setContent}
-          />
-        </InputContainer>
+              <ContentInput
+                placeholder="내용"
+                multiline
+                value={content}
+                onChangeText={setContent}
+              />
+            </InputContainer>
 
-        <AnonymousSection>
-          <CheckBoxButton onPress={handleToggleAnonymous}>
-            <CheckBoxIcon isChecked={isAnonymous} />
-            <Text style={{ fontSize: 13, color: '#6c6c6c' }}>익명 </Text>
-          </CheckBoxButton>
-        </AnonymousSection>
-
-      </Container>
+            <AnonymousSection>
+              <CheckBoxButton onPress={handleToggleAnonymous}>
+                <CheckBoxIcon isChecked={isAnonymous} />
+                <Text style={{ fontSize: 13, color: '#6c6c6c' }}>익명 </Text>
+              </CheckBoxButton>
+            </AnonymousSection>
+          </Container>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const Container = styled.View`
   flex: 1;
-  padding: 20px;
+  padding: 30px;
   background-color: ${(props) => props.theme.background};
 `;
 
@@ -66,39 +73,45 @@ const Header = styled.View`
   margin-bottom: 20px;
 `;
 
+const TopRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 const CloseButton = styled.TouchableOpacity``;
 
 const TitleText = styled.Text`
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 17px;
   color: ${(props) => props.theme.text};
+  margin-left: 25px;
 `;
 
 const DoneButton = styled.TouchableOpacity``;
 
 const DoneText = styled.Text`
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 17px;
   color: #6c6c6c;
 `;
 
 const InputContainer = styled.View`
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 `;
 
 const Input = styled.TextInput`
-  height: 40px;
-  padding: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
   border-bottom-width: 1px;
   border-bottom-color: ${(props) => props.theme.main};
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 5px;
   font-size: 17px;
   color: ${(props) => props.theme.text};
+  font-weight: bold;
 `;
 
 const ContentInput = styled.TextInput`
-  height: 530px;
-  padding: 10px;
+  padding-left: 10px;
+  height: 500px;
   font-size: 15px;
   color: ${(props) => props.theme.text};
 `;
@@ -107,12 +120,12 @@ const AnonymousSection = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 30px;
 `;
 
 const CheckBoxButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
+  margin-top: 50px;
 `;
 
 const CheckBoxIcon = styled.View`
