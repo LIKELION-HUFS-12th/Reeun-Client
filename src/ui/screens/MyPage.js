@@ -22,6 +22,7 @@ const MyPage = ({navigation}) => {
   const [deletePassword, setDeletePassword] = useState("");
   const [nickname,setNickname] = useState("");
   const [editProfile, setEditProfile] = useState(false);
+  const [selectedClass, setSelectedClass] = useState([]);
   const height = Dimensions.get('screen').height;
   const width= Dimensions.get('screen').width;
 
@@ -81,7 +82,7 @@ const MyPage = ({navigation}) => {
           <>
           { userInfo.classList.map((el, index) => {
             return(
-            <ClassEl grade={el.grade} grade_text={`${el.grade}학년 ${el.order}반`} key={index}></ClassEl>
+            <ClassEl grade={el.grade} order={el.order} grade_text={`${el.grade}학년 ${el.order}반`} key={index} navigation={navigation} selectedClass={selectedClass} setSelectedClass={setSelectedClass}></ClassEl>
             )
           })
             
