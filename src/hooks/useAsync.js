@@ -1,11 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-import { useUserInfoStore, useUserStore } from '../logic/store/user';
+import { useAnonymousAtClassStore, useAnonymousStore, useMemberCountStore, useUserInfoStore, useUserStore } from '../logic/store/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const useAsync = () => {
   const {userInfo, setUserInfo} = useUserInfoStore();
   const {user, setUser} = useUserStore();
+  const {memberCount, setMemberCount} = useMemberCountStore();
+  const {isAnonymousAtSchool, setIsAnonymousAtSchool} = useAnonymousStore();
+  const {isAnonymousAtClasses, setIsAnonymousAtClass} = useAnonymousAtClassStore();
 
   const handleSignUp = async (setIsComplete, userInfo,setUserInfo, presentValue, setPresentValue) => {
     // setStep(prev => prev + 1)
@@ -91,6 +94,8 @@ export const useAsync = () => {
       setUser(false);
       AsyncStorage.mergeItem('accessToken', "");
       AsyncStorage.mergeItem('userData', "");
+      setIsAnonymousAtSchool(true);
+      setMemberCount(0);
       console.log(userInfo);
       console.log(user);
     } catch (error) {
@@ -112,6 +117,8 @@ export const useAsync = () => {
       console.log("성공!")
       setUser(false);
       setUserInfo([]);
+      setIsAnonymousAtSchool(true);
+      setMemberCount(0);
       setDeleteModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -175,6 +182,7 @@ export const useAsync = () => {
       })
       console.log(response.data);
       setSchoolMember(response.data.data);
+      setMemberCount(response.data.data.length);
     } catch (error) {
       console.log(error);
       console.log("실패!")
@@ -192,13 +200,14 @@ export const useAsync = () => {
       })
       console.log(response);
       setClassMember(response.data.data);
+      setMemberCount(response.data.data.length);
     } catch (error) {
       console.log(error);
       console.log("학급 유저 목록 조회 실패!")
     }
   }
 
-  const openNicknameToSchool = async() => {
+  const openNicknameToSchool = async(setSchoolMember) => {
     try {
       const response = await axios.post("https://reeun.store/member/openNicknameToSchool/",{},{
         headers:{
@@ -206,14 +215,16 @@ export const useAsync = () => {
         }
       })
       console.log(response.data);
-      AsyncStorage.setItem('isAnonymousAtSchool','false');
+      setIsAnonymousAtSchool(false);
+      console.log(isAnonymousAtSchool);
+      getSchoolMember(setSchoolMember)
     } catch (error) {
       console.log(error);
       console.log(user);
     }
   }
 
-  const openNicknameToClass = async(selectedClass) => {
+  const openNicknameToClass = async(selectedClass, classMember, setClassMember) => {
     try {
       const response = await axios.post("https://reeun.store/member/openNicknameToClass/",{grade:selectedClass.grade},{
         headers:{
@@ -221,8 +232,9 @@ export const useAsync = () => {
         }
       })
       console.log(response.data);
-      AsyncStorage.setItem('isAnonymousAtClass','false');
-
+      setIsAnonymousAtClass(false);
+      console.log(classMember);
+      getClassMember(setClassMember,selectedClass);
     } catch (error) {
       console.log(error);
       console.log(user);

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
-import { useUserInfoStore, useUserStore } from '../../logic/store/user';
+import { useMemberCountStore, useUserInfoStore, useUserStore } from '../../logic/store/user';
 import { useAsync } from '../../hooks/useAsync';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -20,9 +20,7 @@ export default function BoardScreen({route ,navigation}) {
   const [schoolMember, setSchoolMember] = useState([]);
   const [classMember, setClassMember] = useState([]);
   const [postList, setPostList] = useState([]);
-  const memberCount = version === "School" ? schoolMember.length : classMember.length;
-  const [isAnonymous, setIsAnonymous] = useState(true);
-
+  const {memberCount, setMemberCount} = useMemberCountStore();
   const getAnonymous = async(version) => {
     const result = await AsyncStorage.getItem(version==='School' ? 'isAnonymousAtSchool' : 'isAnonymousAtClass');
     console.log(isAnonymous)
@@ -68,19 +66,27 @@ export default function BoardScreen({route ,navigation}) {
     useCallback(() => {
       if(version==="School"){
         getSchoolBoardPosts();
+        getSchoolMember(setSchoolMember);
+        console.log("borad",schoolMember)
+        console.log(schoolMember.length)
+        setMemberCount(schoolMember.length)
       }
       if(version==="Class"){
         getClassBoardPosts(selectedClass, setPostList);
+        getClassMember(setClassMember,selectedClass)
+        console.log("Class",classMember)
+        setMemberCount(classMember.length)
+        
       }
       
-      console.log(schoolMember);
-      console.log(isAnonymous)
+     
     },[user, selectedClass])
   )
 
-  useEffect(() => {
-    getClassBoardPosts(selectedClass, setPostList);
-  }, [selectedClass])
+  // useEffect(() => {
+  //   getClassBoardPosts(selectedClass, setPostList);
+  //   handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass, getAnonymous)
+  // }, [selectedClass])
   
 
 
@@ -94,7 +100,7 @@ export default function BoardScreen({route ,navigation}) {
           <BackButton onPress={() => navigation.navigate('Home')}>
             <BackIcon source={require('../../../assets/back.png')} />
           </BackButton>
-          <MenuButton onPress={() => handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass, getAnonymous, setIsAnonymous)}>
+          <MenuButton onPress={() => handleMenu(setModalVisible, schoolMember, setSchoolMember, getSchoolMember, getClassMember, version, setClassMember, selectedClass, getAnonymous)}>
             <MenuIcon source={require('../../../assets/menu.png')} />
           </MenuButton>
           
@@ -133,7 +139,7 @@ export default function BoardScreen({route ,navigation}) {
           글쓰기  <WritingIcon source={require('../../../assets/writing.png')} />
         </WriteButtonText>
       </WriteButton>
-      <MemberModal modalVisible={modalVisible} setModalVisible={setModalVisible} schoolMember={schoolMember} classMember={classMember} version={version} selectedClass={selectedClass}></MemberModal>
+      <MemberModal modalVisible={modalVisible} setModalVisible={setModalVisible} schoolMember={schoolMember} classMember={classMember} version={version} selectedClass={selectedClass} setClassMember={setClassMember} setSchoolMember={setSchoolMember}></MemberModal>
 
     </Container>
   );
@@ -168,7 +174,7 @@ const BackButton = styled.TouchableOpacity`
 `;
 
 const BackIcon = styled.Image`
-  width: 15px;
+  width: 20px;
   height: 15px;
 `;
 
