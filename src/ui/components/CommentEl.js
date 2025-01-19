@@ -2,11 +2,11 @@ import React from 'react'
 import { Image, TouchableOpacity, View } from 'react-native'
 import styled from 'styled-components/native'
 
-const CommentEl = ({user_name, comment, date}) => {
+const CommentEl = ({user_name, comment, date, index}) => {
   return (
-              <View style={{display:"flex", flexDirection:"row", alignItems:'center',margin:"auto", gap:'15', marginBottom:"15"}}>
+              <View style={{display:"flex", flexDirection:"row", alignItems:'center',margin:"auto", gap:'15', marginBottom:"15"}} key={index}>
                 <CommentBody>
-                  <CommentProfile source={require("../../assets/comment_profile.png")} />
+                  <CommentProfile source={require("../../../assets/comment_profile.png")} />
                   <View style={{display:"flex", flexGrow:2, gap:"3"}}>
                     <CommentUserName>{user_name}</CommentUserName>
                     <CommentContent>{comment}</CommentContent>
@@ -14,7 +14,7 @@ const CommentEl = ({user_name, comment, date}) => {
                   <CommentDate>{date}</CommentDate>
                 </CommentBody>
                 <TouchableOpacity style={{marginRight:"0"}}> 
-                    <Image source={require("../../assets/add_icon.png")} />
+                    <Image source={require("../../../assets/add_icon.png")} />
                 </TouchableOpacity>
               </View>
   )

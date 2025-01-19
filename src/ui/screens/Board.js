@@ -125,7 +125,7 @@ export default function BoardScreen({route ,navigation}) {
       <ScrollView contentContainerStyle={styles.posts}>
         {postList.map((el, index) => {
           return(
-            <Post key={index}>
+            <Post key={index} onPress={() => navigation.navigate('ViewPost', {el:el, version:version})}>
               <PostTitle>{el.title}</PostTitle>
               <PostPreview>{el.body}</PostPreview>
               <PostDate>{`댓글 ${el.comments.length} ${el.created_at}`}</PostDate>
@@ -134,7 +134,7 @@ export default function BoardScreen({route ,navigation}) {
         })}
       </ScrollView>
 
-      <WriteButton onPress={() => navigation.navigate("Writing")}>
+      <WriteButton onPress={() => navigation.navigate("Writing",{version:version, selectedClass:selectedClass})}>
         <WriteButtonText>
           글쓰기  <WritingIcon source={require('../../../assets/writing.png')} />
         </WriteButtonText>
