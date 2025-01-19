@@ -23,13 +23,13 @@ export const getMessages = async (otherId) => {
     // 필요한 데이터만 반환
     return data.map((message) => ({
       senderId: message.sender.id,
-      senderNickname: message.sender.nickname,
+      senderNickname: message.sender.name, // 수정
       receiverId: message.receiver.id,
-      receiverNickname: message.receiver.nickname,
-      content: message.content?.trim() || '(내용 없음)', // 공백 처리
+      receiverNickname: message.receiver.name, // 수정
+      content: message.content?.trim() || '(내용 없음)',
       createDate: message.createDate,
       isMyChat: message.isMyChat,
-    }));
+    }));    
   } catch (error) {
     console.error('Failed to fetch messages:', error.response?.data || error.message);
     throw error;

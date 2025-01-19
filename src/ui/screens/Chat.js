@@ -12,18 +12,25 @@ import { useAsync } from '../../hooks/useAsync';
 export default function Chat() {
   const navigation = useNavigation();
   const route = useRoute();
-  
+
   // 안전하게 파라미터 받기
   const { recipientId, recipientName } = route.params || {}; // 파라미터가 없으면 빈 객체로 처리
-  
+  if (!recipientId) {
+    console.error('Recipient ID is missing');
+  }
+
   const { getToken } = useAsync(); // useAsync에서 토큰 가져오기
   const [token, setToken] = useState(null);
 
   // 토큰 가져오기
   useEffect(() => {
     const fetchToken = async () => {
-      const fetchedToken = await getToken();
-      setToken(fetchedToken);
+      try {
+        const fetchedToken = await getToken();
+        setToken(fetchedToken);
+      } catch (error) {
+        console.error('Failed to fetch token:', error);
+      }
     };
     fetchToken();
   }, [getToken]);

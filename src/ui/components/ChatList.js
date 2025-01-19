@@ -8,12 +8,12 @@ export default function ChatList({ messages }) {
     <ChatListContainer>
       <FlatList
         data={messages}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.createDate}-${index}`} // 고유 키 설정
         renderItem={({ item }) => (
-          <ChatItem isMine={item.sender === '나'}>
-            <SenderText>{item.sender}</SenderText>
-            <MessageText>{item.message}</MessageText>
-            <TimeText>{item.created_at}</TimeText>
+          <ChatItem isMine={item.isMyChat}>
+            <SenderText>{item.isMyChat ? '나' : item.senderNickname}</SenderText>
+            <MessageText>{item.content}</MessageText>
+            <TimeText>{item.createDate}</TimeText>
           </ChatItem>
         )}
       />
