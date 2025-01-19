@@ -68,7 +68,8 @@ export default function Chat() {
           </ChatInputContainer>
         </KeyboardAvoidingView>
 
-        <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} />
+        {/* recipientId를 otherId로 전달 */}
+        <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} otherId={recipientId} />
       </Screen>
     </TouchableWithoutFeedback>
   );

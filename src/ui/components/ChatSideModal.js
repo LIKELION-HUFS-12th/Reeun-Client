@@ -1,9 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
-import { Animated, TouchableWithoutFeedback, Image } from 'react-native';
+import { Animated, TouchableWithoutFeedback, Alert } from 'react-native';
+import axios from 'axios'; 
+import { useUserStore } from '../../logic/store/user'; 
+import BASE_URL from '../../logic/api/BaseUrl';
 
-export default function ChatSideModal({ isVisible, onClose }) {
+export default function ChatSideModal({ isVisible, onClose, otherId }) {
   const slideAnim = useRef(new Animated.Value(300)).current;
+  const token = useUserStore.getState().user; // 토큰 가져오기
 
   useEffect(() => {
     if (isVisible) {
@@ -21,8 +25,26 @@ export default function ChatSideModal({ isVisible, onClose }) {
     }
   }, [isVisible, slideAnim]);
 
-  const handleGoToPost = () => {
-    console.log("게시글로 이동!");
+  // 쪽지 나가기 API 호출
+  const handleExitChat = async () => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}message/exitMessage`, // API 엔드포인트
+        { otherId }, // 요청 바디
+        {
+          headers: { Authorization: `Bearer ${token}` }, // 헤더에 토큰 추가
+        }
+      );
+
+      if (response.status === 201) {
+        Alert.alert('성공', '쪽지를 나갔습니다.');
+        onClose(); // 모달 닫기
+      } else {
+        throw new Error(response.data?.message || '쪽지 나가기 실패');
+      }
+    } catch (error) {
+      Alert.alert('오류', error.message || '쪽지 나가기 중 오류가 발생했습니다.');
+    }
   };
 
   return (
@@ -36,16 +58,6 @@ export default function ChatSideModal({ isVisible, onClose }) {
               </CloseButton>
             </ModalHeader>
             <ModalContent>
-              <Profile>
-                <ProfileDetails>
-                  <ProfileTitle>리운초 전체게시판</ProfileTitle>
-                  <ProfileSubtitle>나누군지아는사람?</ProfileSubtitle>
-                </ProfileDetails>
-              </Profile>
-              <GoToPostButton onPress={handleGoToPost}>
-                <GoToPostText>게시글로 바로가기</GoToPostText>
-              </GoToPostButton>
-              <Divider />
               <ParticipantSection>
                 <SectionTitle>참여자 2</SectionTitle>
                 <Participant>
@@ -63,8 +75,9 @@ export default function ChatSideModal({ isVisible, onClose }) {
               </ParticipantSection>
             </ModalContent>
             <Footer>
-              <FooterText>나가기</FooterText>
-              <FooterTextRed>신고하기</FooterTextRed>
+              <FooterButton onPress={handleExitChat}>
+                <FooterTextRed>나가기</FooterTextRed>
+              </FooterButton>
             </Footer>
           </AnimatedModal>
         </ModalOverlay>
@@ -120,33 +133,9 @@ const ModalContent = styled.ScrollView`
   max-height: 300px;
 `;
 
-const Profile = styled.View`
-  align-items: center;
-  margin-bottom: 15px;
+const ParticipantSection = styled.View`
+  margin-top: 10px;
 `;
-
-const ProfileDetails = styled.View`
-  align-items: center;
-`;
-
-const ProfileTitle = styled.Text`
-  color: ${(props) => props.theme.text || '#000000'};
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const ProfileSubtitle = styled.Text`
-  color: #666666;
-  font-size: 14px;
-`;
-
-const Divider = styled.View`
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 10px 0;
-`;
-
-const ParticipantSection = styled.View``;
 
 const SectionTitle = styled.Text`
   color: ${(props) => props.theme.text || '#000000'};
@@ -159,6 +148,7 @@ const Participant = styled.View`
   flex-direction: row;
   align-items: center;
   margin-bottom: 8px;
+  margin-top: 5px;
 `;
 
 const ParticipantImage = styled.Image`
@@ -183,6 +173,12 @@ const Footer = styled.View`
   margin-bottom: 50px;
 `;
 
+const FooterButton = styled.TouchableOpacity`
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+`;
+
 const FooterText = styled.Text`
   color: ${(props) => props.theme.text || '#000000'};
   font-size: 14px;
@@ -191,19 +187,4 @@ const FooterText = styled.Text`
 const FooterTextRed = styled.Text`
   color: #ff0000;
   font-size: 14px;
-`;
-
-const GoToPostButton = styled.TouchableOpacity`
-  padding: 10px 20px;
-  border-radius: 5px;
-  align-items: center;
-  border: 1px solid #e4e4e4;
-  background-color: transparent;
-  margin-bottom: 3px;
-`;
-
-const GoToPostText = styled.Text`
-  color: #505050;
-  font-size: 16px;
-  font-weight: bold;
 `;

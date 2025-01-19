@@ -8,7 +8,6 @@ export default function useChatState(recipientId, token) {
 
   const fetchMessages = useCallback(async () => {
     if (!recipientId || !token) {
-      console.error('Recipient ID or token is missing');
       return;
     }
 
