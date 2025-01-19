@@ -21,6 +21,7 @@ import SetClass from './src/ui/screens/SetClass';
 import BoardScreen from './src/ui/screens/Board';
 import WritingScreen from './src/ui/screens/Writing';
 import { useUserStore } from './src/logic/store/user';
+import ViewPost from './src/ui/screens/ViewPost';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ function AppNavigator() {
       <Stack.Screen name='SetClass' component={SetClass} options={{headerShown:false}}/>
       <Stack.Screen name='Board' component={BoardScreen} options={{headerShown:false}}/>
       <Stack.Screen name="Writing" component={WritingScreen} options={{headerShown:false}}/>
+      <Stack.Screen name="ViewPost" component={ViewPost} options={{headerShown:false}} />
     </Stack.Navigator>
   );
 }

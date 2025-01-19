@@ -1,50 +1,64 @@
-import React from 'react'
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import CommentEl from '../components/CommentEl'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { useNavigation } from '@react-navigation/native'
 
-const ViewPost = () => {
+const ViewPost = ({route}) => {
   const comment_user = ["김00", "이00"];
   const comment = ["뭐야ㅋㅋㅋㅋ 너 누군데??", "누구게~?"];
   const date = ["2024.09.04", "2024.09.05"]
+  const height = Dimensions.get('screen').height;
+  const {el,version} = route.params;
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log(el)
+  }, [])
+  
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:'white', height:height}}>
       <PostHeader>
-        <TouchableOpacity style={{position:"absolute", left:"30"}}>
-          <Image source={require("../../assets/arrow_back_gray.png")}  />
+        <TouchableOpacity style={{position:"absolute", left:"30"}} onPress={() => navigation.goBack()}>
+          <Image source={require("../../../assets/arrow_back_gray.png")}  />
         </TouchableOpacity>
         <HeaderText>
-          <Text style={{fontSize:"16"}}>전체 커뮤니티</Text>
+          <Text style={{fontSize:"16"}}>{version === "School" ? "전체 커뮤니티" : "학급 커뮤니티"}</Text>
+          {version === "School" ?
           <Text style={{fontSize:"20"}}><Text style={{color:"#FB5E3D", fontWeight:"900"}}>리운 </Text>초등학교{"(2008)"}</Text>
+          :
+          <Text style={{fontSize:"20"}}><Text style={{color:"#FB5E3D", fontWeight:"900"}}>{`${el.grade}학년 ${el.order}반`} </Text>{`(${el.admission_year})`}</Text>
+
+          } 
         </HeaderText>
       </PostHeader>
       <OwnerProfile>
-        <OwnerProfileImg source={require("../../assets/owner_profile.png")} />
+        <OwnerProfileImg source={require("../../../assets/owner_profile.png")} />
         <View style={{display:"flex", flexGrow:2, gap:"5"}}>
-          <OwnerName >익명</OwnerName>
-          <UpLoadDate>2024-09-04</UpLoadDate>
+          <OwnerName >{el.user.name ? el.user.name : el.user.id}</OwnerName>
+          <UpLoadDate>{el.created_at}</UpLoadDate>
         </View>
         <TouchableOpacity style={{marginRight:"25"}}> 
-          <Image source={require("../../assets/add_icon.png")} />
+          <Image source={require("../../../assets/add_icon.png")} />
         </TouchableOpacity>
       </OwnerProfile>
       <PostContent>
-        <ContentTitle>와 우리 학급도 여기 있네??</ContentTitle>
-        <ContentText>다들 보고싶다!</ContentText>
+        <ContentTitle>{el.title}</ContentTitle>
+        <ContentText>{el.body}</ContentText>
       </PostContent>
       
       <CommentsBody>
         <CommentCount>
-          <Text >댓글</Text>
-          <Text style={{color:"#FB5E3D", fontWeight:"600"}}>2</Text>
+          <Text >댓글 </Text>
+          <Text style={{color:"#FB5E3D", fontWeight:"600"}}>{el.comments.length}</Text>
         </CommentCount>
         <ScrollView>
-        {comment_user.map((el, index) => {
+        {el.comments.map((el, index) => {
           return(
-              <CommentEl user_name={el} comment={comment[index]} date={date[index]}/>
+              <CommentEl user_name={el} comment={comment[index]} date={date[index] } index={index}/>
           )
         })}
         </ScrollView>

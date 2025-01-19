@@ -1,13 +1,46 @@
-import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Image, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';  // ScrollView를 명시적으로 임포트
 import styled from 'styled-components/native';
+import axios from 'axios'
+import { useUserInfoStore, useUserStore } from '../../logic/store/user';
 
-export default function WritingScreen({ navigation }) {
+export default function WritingScreen({ route}) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const {version, selectedClass} = route.params;
+  const navigation = useNavigation();
+  const {userInfo} = useUserInfoStore();
+  const {user} = useUserStore();
+
 
   const handleToggleAnonymous = () => setIsAnonymous((prev) => !prev);
+
+  const handleWritingClass = async() => {
+    try {
+      const response = await axios.post("https://reeun.store/classboard/",{
+        grade:selectedClass.grade,
+        order:selectedClass.order,
+        admission_year:userInfo.enrollYear,
+        title:title,
+        body:content
+      },{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    console.log(selectedClass);
+  }, [])
+  
 
   return (
     <KeyboardAvoidingView
@@ -25,7 +58,7 @@ export default function WritingScreen({ navigation }) {
                 </CloseButton>
                 <TitleText>글쓰기</TitleText>
               </TopRow>
-              <DoneButton onPress={() => console.log('게시')} activeOpacity={0.7}>
+              <DoneButton onPress={() => handleWritingClass()} activeOpacity={0.7}>
                 <DoneText>완료</DoneText>
               </DoneButton>
             </Header>
@@ -34,7 +67,7 @@ export default function WritingScreen({ navigation }) {
               <Input
                 placeholder="제목"
                 value={title}
-                onChangeText={setTitle}
+                onChange={(e) => {setTitle(e.nativeEvent.text);console.log(e.nativeEvent.text)}}
                 placeholderTextColor="#000"
               />
 
@@ -42,7 +75,8 @@ export default function WritingScreen({ navigation }) {
                 placeholder="내용"
                 multiline
                 value={content}
-                onChangeText={setContent}
+                onChange={(e) => {setContent(e.nativeEvent.text);console.log(e.nativeEvent.text)}}
+                
               />
             </InputContainer>
 
@@ -81,7 +115,7 @@ const TopRow = styled.View`
 const CloseButton = styled.TouchableOpacity``;
 
 const TitleText = styled.Text`
-  font-size: 17px;
+  font-size: 20px;
   color: ${(props) => props.theme.text};
   margin-left: 25px;
 `;
