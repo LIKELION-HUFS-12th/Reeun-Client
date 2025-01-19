@@ -6,7 +6,7 @@ export const fetchChatRooms = async () => {
   try {
     const token = useUserStore.getState().user;
 
-    const response = await axios.get(`${BASE_URL}member/`, {
+    const response = await axios.get(`${BASE_URL}message/`, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
 

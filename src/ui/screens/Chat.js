@@ -48,7 +48,7 @@ export default function Chat() {
           <AppTopBar
             title={recipientName || '채팅'} // 전달된 recipientName 또는 기본값 사용
             iconSource={require('../../../assets/arrow_back_black.png')}
-            onIconPress={() => navigation.goBack()}
+            onIconPress={() => navigation.navigate('Chatlist', { screen: 'ChatList' })}
             rightIconSource="ellipsis-vertical"
             onRightIconPress={toggleModal}
           />
