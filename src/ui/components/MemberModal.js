@@ -1,105 +1,140 @@
 import React from 'react';
 import { Dimensions, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
-import { useUserInfoStore } from '../../logic/store/user';
+import { useAnonymousAtClassStore, useAnonymousStore, useUserInfoStore } from '../../logic/store/user';
 import { useAsync } from '../../hooks/useAsync';
 import { useNavigation } from '@react-navigation/native'; // 네비게이션 추가
 
-const MemberModal = ({ modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass }) => {
-  const { userInfo } = useUserInfoStore();
-  const { openNicknameToSchool, openNicknameToClass } = useAsync();
-  const navigation = useNavigation(); // 네비게이션 훅 사용
+const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass ,setClassMember, setSchoolMember}) => {
+  const {userInfo} = useUserInfoStore();
+  const {openNicknameToSchool, openNicknameToClass, getUserInfo} = useAsync();
+  const {isAnonymousAtSchool} = useAnonymousStore();
+  const {isAnonymousAtClasses} = useAnonymousAtClassStore();
+  const [refresh, setRefresh] = useState(false);
 
-  // 쪽지 아이콘 클릭 시 Chat.js로 이동
-  const handleSendMessage = (member) => {
-    console.log('Navigating to Chat with:', member);
-    navigation.navigate('Chat', {
-      screen: 'Chat', // ChatStack 내부의 Chat 화면을 명시적으로 지정
-      params: {
-        recipientId: member.id,
-        recipientName: member.name || `user id:${member.id}`,
-      },
-    });
-  };
-  
+  useEffect(() => {
+    setRefresh((prev) => !prev); // 리렌더링 트리거
+  }, [isAnonymousAtClasses, isAnonymousAtSchool, userInfo, schoolMember, classMember]);
+
+  // useEffect(
+    
+  //     setIsAnonymous(getAnonymous());
+    
+  // ,[])
+
+  useEffect(() => {
+    console.log('isAnonymousAtClass changed:', isAnonymousAtClasses);
+    getUserInfo();
+  }, [isAnonymousAtClasses]);
+
+
+
+
 
   return (
     <SafeAreaView>
-      <Modal
-        isVisible={modalVisible}
-        animationIn={'slideInRight'}
-        animationOut={'slideOutRight'}
-        onBackdropPress={() => setModalVisible(false)}
-        backdropOpacity={0.5}
-        style={{ justifyContent: 'flex-end', margin: 0 }}
-      >
-        <View style={{
-          width: Dimensions.get('screen').width / 1.7,
-          height: Dimensions.get('screen').height,
-          backgroundColor: "white",
-          position: 'absolute',
-          right: 0,
-          padding: 20
-        }}>
-          <Text style={{ marginTop: 80, fontSize: 24, fontWeight: '700', color: "#FB5E3D" }}>
-            {version === "School" ? userInfo.school.school_name : `${selectedClass.grade}학년 ${selectedClass.order}반`}
-          </Text>
-          <Text style={{ marginTop: 20, fontSize: 22, fontWeight: '700' }}>유저목록</Text>
-
-          <View style={{ marginTop: 30 }}>
-            <Text style={{ fontSize: 17, fontWeight: '700' }}>
-              {userInfo.name ? userInfo.name : userInfo.username} (나)
+      <Modal isVisible={modalVisible} animationIn={'slideInRight'} animationOut={'slideOutRight'} onBackdropPress={() => setModalVisible(false)} propagateSwipe={true}>
+        <View style={{width:Dimensions.get('screen').width/1.7
+        , height:Dimensions.get('screen').height, backgroundColor:"white", position:'absolute', right:'-17'}}>
+          <Text style={{marginTop:80, fontSize:'24', fontWeight:'700', position:'absolute', left:'20', color:"#FB5E3D"}}>
+            {version === "School" ? userInfo.school.school_name:`${selectedClass.grade}학년 ${selectedClass.order}반`}
             </Text>
-            <View style={{ width: '100%', height: 0.5, backgroundColor: "#B2B2B0", marginVertical: 10 }}></View>
-          </View>
+          <Text style={{marginTop:110, fontSize:'22', fontWeight:'700', position:'absolute', left:'20'}}>유저목록</Text>
+        </View>
+            <View style={{ display:'flex', gap:10, justifyContent:'center',position:'absolute', left:140, top:150}}>
+              <Text style={{fontSize:17, fontWeight:'700', marginLeft:30}}>{userInfo.name?userInfo.name : userInfo.username}</Text>
+              <View style={{width:Dimensions.get('screen').width/1.8, height:'.5', backgroundColor:"#B2B2B0"}}></View>
+            </View>
+            {version==="School" && isAnonymousAtSchool === true ? (
+                
+                <View style={{position:'absolute', top:300, right:30, zIndex:9}}>
+                  <Text style={{fontSize:20, fontWeight:600, textAlign:'center'}}>내 정보 공개 후 {"\n"}유저 목록을{"\n"} 조회할 수 있어요!</Text>
+                  
+                  <TouchableOpacity onPress={() => version==="School" ? openNicknameToSchool(setSchoolMember) : openNicknameToClass(selectedClass)} style={{marginTop:100, backgroundColor:"#FB5E3D", width:140, height:40, borderRadius:10, display:'flex', justifyContent:'center', alignItems:'center', zIndex:9}}>
+                    <Text style={{color:'white', fontSize:'16', fontWeight:700}}>내 정보 공개하기</Text>
+                  </TouchableOpacity>
+                </View>) : <></> }
+                {version === "Class" && isAnonymousAtClasses===true ?
+            (
+              <View style={{position:'absolute', top:300, right:30, zIndex:9}}>
+                <Text style={{fontSize:20, fontWeight:600, textAlign:'center'}}>내 정보 공개 후 {"\n"}유저 목록을{"\n"} 조회할 수 있어요!</Text>
+                
+                <TouchableOpacity onPress={() => version==="School" ? openNicknameToSchool(setSchoolMember) : openNicknameToClass(selectedClass, classMember, setClassMember)} style={{marginTop:100, backgroundColor:"#FB5E3D", width:140, height:40, borderRadius:10, display:'flex', justifyContent:'center', alignItems:'center', zIndex:9}}>
+                  <Text style={{color:'white', fontSize:'16', fontWeight:700}}>내 정보 공개하기</Text>
+                </TouchableOpacity>
+              </View>)
+            : <View></View>}
+            <ScrollView>
 
-          <ScrollView style={{ marginTop: 10 }}>
-            {version === "School"
-              ? schoolMember.map((el, index) => (
-                  el.id !== userInfo.id && (
-                    <View
-                      key={index}
-                      style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}
-                    >
-                      <Text style={{ fontSize: 17, fontWeight: '700' }}>
-                        {el.name ? el.name : `user id:${el.id}`}
-                      </Text>
-                      <TouchableOpacity onPress={() => handleSendMessage(el)}> {/* 쪽지 아이콘 클릭 시 이동 */}
-                        <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
-                      </TouchableOpacity>
-                    </View>
+                
+              
+              { version === "School" ? (
+                
+                schoolMember.map((el, index) => (
+                  el.id === userInfo.id ? null : (
+                    
+                      <View
+                        key={index}
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "absolute",
+                          left: 170,
+                          top: 200 + index * 30,
+                        }}
+                      >
+                        <Text style={{ fontSize: 17, fontWeight: "700", flex: 1 }}>
+                          {el.name ? el.name : `user id:${el.id}`}
+                        </Text>
+                        <TouchableOpacity style={{ position: "absolute", left: 130 }}>
+                          <Image
+                            source={require("../../../assets/dm.png")}
+                            style={{ width: 22, height: 22 }}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    
                   )
                 ))
-              : classMember.map((el, index) => (
-                  el.id !== userInfo.id && (
+              ) : (
+                
+                classMember.map((el, index) => (
+                  el.id === userInfo.id ? null : (
+                    
                     <View
                       key={index}
-                      style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        position: "absolute",
+                        left: 170,
+                        top: 200 + index * 30,
+                      }}
                     >
-                      <Text style={{ fontSize: 17, fontWeight: '700' }}>
+                      <Text style={{ fontSize: 17, fontWeight: "700",}}>
                         {el.name ? el.name : `user id:${el.id}`}
                       </Text>
-                      <TouchableOpacity onPress={() => handleSendMessage(el)}> {/* 쪽지 아이콘 클릭 시 이동 */}
-                        <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
+                      <TouchableOpacity style={{ position: "absolute", left:140}}>
+                        <Image
+                          source={require("../../../assets/dm.png")}
+                          style={{ width: 22, height: 22 }}
+                        />
                       </TouchableOpacity>
                     </View>
+                    
                   )
-                ))}
-          </ScrollView>
-
-          <TouchableOpacity
-            onPress={() => (version === "School" ? openNicknameToSchool() : openNicknameToClass(selectedClass))}
-            style={{
-              marginTop: 20,
-              backgroundColor: '#FB5E3D',
-              padding: 10,
-              borderRadius: 5,
-              alignItems: 'center'
-            }}
-          >
-            <Text style={{ color: 'white', fontWeight: '700' }}>내 정보 공개하고 유저 목록 보기</Text>
-          </TouchableOpacity>
-        </View>
+                ))
+              )}
+              </ScrollView>
+            
+         <></>
+        
+        
+          
       </Modal>
     </SafeAreaView>
   );
