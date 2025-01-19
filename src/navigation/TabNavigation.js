@@ -46,20 +46,20 @@ export default function TabNavigator() {
 
           if (route.name === 'Home') {
             iconPath = require('../../assets/home.png');
-          } else if (route.name === 'Chat') { // ChatList -> Chat 변경
+          } else if (route.name === 'Chatlist') { // ChatList -> Chat 변경
             iconPath = require('../../assets/dm.png');
           } else if (route.name === 'Notification') {
             iconPath = require('../../assets/notification.png');
           } else if (route.name === 'Mypage') {
             iconPath = require('../../assets/my.png');
-          }
+          } 
 
           return <TabBarIcon iconPath={iconPath} focused={focused} routeName={route.name} />;
         },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Chat" component={ChatStack} />
+      <Tab.Screen name="Chatlist" component={ChatStack} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Mypage" component={MyPage} />
     </Tab.Navigator>

@@ -1,40 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native'; // 추가
+import { useNavigation, useRoute } from '@react-navigation/native'; // useRoute로 파라미터 받기
 import AppTopBar from '../components/AppTopBar';
 import ChatList from '../components/ChatList';
 import ChatInput from '../components/ChatInput';
-import ChatSideModal from '../components/ChatSideModal'; 
-import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import ChatSideModal from '../components/ChatSideModal';
+import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
+import useChatState from '../../logic/hooks/useChatState';
+import { useAsync } from '../../hooks/useAsync';
 
 export default function Chat() {
-  const navigation = useNavigation(); // 네비게이션 객체 가져오기
-  const dummyMessages = [
-    { id: '1', sender: '나', message: '혹시 김멋사?', created_at: '2024-12-28 12:31 PM' },
-    { id: '2', sender: '익명', message: '오', created_at: '2024-12-28 12:40 PM' },
-  ];
+  const navigation = useNavigation();
+  const route = useRoute();
 
-  const [messages, setMessages] = useState(dummyMessages);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  // 안전하게 파라미터 받기
+  const { recipientId, recipientName } = route.params || {}; // 파라미터가 없으면 빈 객체로 처리
+  if (!recipientId) {
+    console.error('Recipient ID is missing');
+  }
 
-  const handleSend = (message) => {
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-CA'); // YYYY-MM-DD 형식
-    const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    setMessages([
-      ...messages,
-      {
-        id: String(messages.length + 1),
-        sender: '나',
-        message,
-        created_at: `${formattedDate} ${formattedTime}`,
-      },
-    ]);
-  };
+  const { getToken } = useAsync(); // useAsync에서 토큰 가져오기
+  const [token, setToken] = useState(null);
 
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
+  // 토큰 가져오기
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const fetchedToken = await getToken();
+        setToken(fetchedToken);
+      } catch (error) {
+        console.error('Failed to fetch token:', error);
+      }
+    };
+    fetchToken();
+  }, [getToken]);
+
+  const { messages, handleSend, isModalVisible, toggleModal, loading } = useChatState(recipientId, token);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -42,29 +43,38 @@ export default function Chat() {
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior="padding"
-          keyboardVerticalOffset={-40} 
+          keyboardVerticalOffset={-40}
         >
           <AppTopBar
-            title="채팅"
+            title={recipientName || '채팅'} // 전달된 recipientName 또는 기본값 사용
             iconSource={require('../../../assets/arrow_back_black.png')}
-            onIconPress={() => navigation.goBack()} // 뒤로가기 설정
+            onIconPress={() => navigation.goBack()}
             rightIconSource="ellipsis-vertical"
             onRightIconPress={toggleModal}
           />
+
           <Content>
-            <ChatList messages={messages} />
+            {loading ? (
+              <LoadingContainer>
+                <ActivityIndicator size="large" color="#0000ff" />
+              </LoadingContainer>
+            ) : (
+              <ChatList messages={messages} />
+            )}
           </Content>
+
           <ChatInputContainer>
             <ChatInput onSend={handleSend} />
           </ChatInputContainer>
         </KeyboardAvoidingView>
-        <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} />
+
+        {/* recipientId를 otherId로 전달 */}
+        <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} otherId={recipientId} />
       </Screen>
     </TouchableWithoutFeedback>
   );
 }
 
-// Styled Components
 const Screen = styled.View`
   flex: 1;
   background-color: ${(props) => props.theme.background || '#FFFFFF'};
@@ -83,4 +93,10 @@ const ChatInputContainer = styled.View`
   border-top-width: 0.1px;
   border-top-color: #e0e0e0;
   background-color: ${(props) => props.theme.background || '#FFFFFF'};
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
