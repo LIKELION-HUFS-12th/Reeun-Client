@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native'; // useRoute로 파라미터 받기
 import AppTopBar from '../components/AppTopBar';
 import ChatList from '../components/ChatList';
 import ChatInput from '../components/ChatInput';
 import ChatSideModal from '../components/ChatSideModal';
 import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import useChatState from '../../logic/hooks/useChatState';
+import { useAsync } from '../../hooks/useAsync';
 
 export default function Chat() {
   const navigation = useNavigation();
-  const { messages, handleSend, isModalVisible, toggleModal, loading } = useChatState();
+  const route = useRoute();
+  
+  // 안전하게 파라미터 받기
+  const { recipientId, recipientName } = route.params || {}; // 파라미터가 없으면 빈 객체로 처리
+  
+  const { getToken } = useAsync(); // useAsync에서 토큰 가져오기
+  const [token, setToken] = useState(null);
+
+  // 토큰 가져오기
+  useEffect(() => {
+    const fetchToken = async () => {
+      const fetchedToken = await getToken();
+      setToken(fetchedToken);
+    };
+    fetchToken();
+  }, [getToken]);
+
+  const { messages, handleSend, isModalVisible, toggleModal, loading } = useChatState(recipientId, token);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -21,12 +39,13 @@ export default function Chat() {
           keyboardVerticalOffset={-40}
         >
           <AppTopBar
-            title="채팅"
+            title={recipientName || '채팅'} // 전달된 recipientName 또는 기본값 사용
             iconSource={require('../../../assets/arrow_back_black.png')}
             onIconPress={() => navigation.goBack()}
             rightIconSource="ellipsis-vertical"
             onRightIconPress={toggleModal}
           />
+
           <Content>
             {loading ? (
               <LoadingContainer>
@@ -36,17 +55,18 @@ export default function Chat() {
               <ChatList messages={messages} />
             )}
           </Content>
+
           <ChatInputContainer>
             <ChatInput onSend={handleSend} />
           </ChatInputContainer>
         </KeyboardAvoidingView>
+
         <ChatSideModal isVisible={isModalVisible} onClose={toggleModal} />
       </Screen>
     </TouchableWithoutFeedback>
   );
 }
 
-// Styled Components
 const Screen = styled.View`
   flex: 1;
   background-color: ${(props) => props.theme.background || '#FFFFFF'};

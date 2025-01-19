@@ -12,24 +12,24 @@ export default function ChatListScreen({ navigation }) {
         <HeaderTitle>쪽지</HeaderTitle>
       </Header>
 
-      {/* 로딩 상태 */}
+      {/* 로딩 */}
       {loading && (
         <LoadingContainer>
           <ActivityIndicator size="large" color="#0000ff" />
         </LoadingContainer>
       )}
 
-      {/* 에러 상태 */}
+      {/* 에러 */}
       {error && (
         <ErrorContainer>
           <ErrorText>{error}</ErrorText>
         </ErrorContainer>
       )}
 
-      {/* 빈 목록 상태 */}
+      {/* 채팅 목록이 비어있을 때 */}
       {!loading && !error && chatRooms.length === 0 && (
         <EmptyContainer>
-          <EmptyText>채팅방이 없습니다. 새로운 대화를 시작해보세요!</EmptyText>
+          <EmptyText>채팅방이 없습니다. 게시판으로 가서 새로운 대화를 시작해보세요!</EmptyText>
         </EmptyContainer>
       )}
 

@@ -1,25 +1,37 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {  Dimensions, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-
+import React from 'react';
+import { Dimensions, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { useUserInfoStore } from '../../logic/store/user';
 import { useAsync } from '../../hooks/useAsync';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native'; // 네비게이션 추가
 
-const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass}) => {
-  const {userInfo} = useUserInfoStore();
-  const {openNicknameToSchool, openNicknameToClass} = useAsync();
+const MemberModal = ({ modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass }) => {
+  const { userInfo } = useUserInfoStore();
+  const { openNicknameToSchool, openNicknameToClass } = useAsync();
+  const navigation = useNavigation(); // 네비게이션 훅 사용
+
+  // 쪽지 아이콘 클릭 시 Chat.js로 이동
+  const handleSendMessage = (member) => {
+    console.log('Navigating to Chat with:', member);
+    navigation.navigate('Chat', {
+      screen: 'Chat', // ChatStack 내부의 Chat 화면을 명시적으로 지정
+      params: {
+        recipientId: member.id,
+        recipientName: member.name || `user id:${member.id}`,
+      },
+    });
+  };
+  
 
   return (
     <SafeAreaView>
-      <Modal 
-        isVisible={modalVisible} 
-        animationIn={'slideInRight'} 
-        animationOut={'slideOutRight'} 
-        onBackdropPress={() => setModalVisible(false)} // 외부 클릭 시 닫기
-        backdropOpacity={0.5} // 배경 어둡기 설정
-        style={{ justifyContent: 'flex-end', margin: 0 }} // 모달 위치 설정
+      <Modal
+        isVisible={modalVisible}
+        animationIn={'slideInRight'}
+        animationOut={'slideOutRight'}
+        onBackdropPress={() => setModalVisible(false)}
+        backdropOpacity={0.5}
+        style={{ justifyContent: 'flex-end', margin: 0 }}
       >
         <View style={{
           width: Dimensions.get('screen').width / 1.7,
@@ -42,33 +54,41 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
           </View>
 
           <ScrollView style={{ marginTop: 10 }}>
-            {version === "School" ? schoolMember.map((el, index) => (
-              el.id !== userInfo.id && (
-                <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-                  <Text style={{ fontSize: 17, fontWeight: '700' }}>
-                    {el.name ? el.name : `user id:${el.id}`}
-                  </Text>
-                  <TouchableOpacity>
-                    <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
-                  </TouchableOpacity>
-                </View>
-              )
-            )) : classMember.map((el, index) => (
-              el.id !== userInfo.id && (
-                <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
-                  <Text style={{ fontSize: 17, fontWeight: '700' }}>
-                    {el.name ? el.name : `user id:${el.id}`}
-                  </Text>
-                  <TouchableOpacity>
-                    <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
-                  </TouchableOpacity>
-                </View>
-              )
-            ))}
+            {version === "School"
+              ? schoolMember.map((el, index) => (
+                  el.id !== userInfo.id && (
+                    <View
+                      key={index}
+                      style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}
+                    >
+                      <Text style={{ fontSize: 17, fontWeight: '700' }}>
+                        {el.name ? el.name : `user id:${el.id}`}
+                      </Text>
+                      <TouchableOpacity onPress={() => handleSendMessage(el)}> {/* 쪽지 아이콘 클릭 시 이동 */}
+                        <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
+                      </TouchableOpacity>
+                    </View>
+                  )
+                ))
+              : classMember.map((el, index) => (
+                  el.id !== userInfo.id && (
+                    <View
+                      key={index}
+                      style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}
+                    >
+                      <Text style={{ fontSize: 17, fontWeight: '700' }}>
+                        {el.name ? el.name : `user id:${el.id}`}
+                      </Text>
+                      <TouchableOpacity onPress={() => handleSendMessage(el)}> {/* 쪽지 아이콘 클릭 시 이동 */}
+                        <Image source={require("../../../assets/dm.png")} style={{ width: 22, height: 22 }} />
+                      </TouchableOpacity>
+                    </View>
+                  )
+                ))}
           </ScrollView>
 
-          <TouchableOpacity 
-            onPress={() => version === "School" ? openNicknameToSchool() : openNicknameToClass(selectedClass)} 
+          <TouchableOpacity
+            onPress={() => (version === "School" ? openNicknameToSchool() : openNicknameToClass(selectedClass))}
             style={{
               marginTop: 20,
               backgroundColor: '#FB5E3D',
@@ -82,7 +102,7 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
         </View>
       </Modal>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default MemberModal;
