@@ -2,9 +2,9 @@ import React from 'react'
 import { Text, TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
 
-const ClassEl = ({grade, order, grade_text, key ,navigation, selectedClass, setSelectedClass}) => {
+const ClassEl = ({grade, order, grade_text, index ,navigation, selectedClass, setSelectedClass}) => {
   return (
-    <ClassElBody key={key} onPress={() => {
+    <ClassElBody key={index} onPress={() => {
       const updatedClass = {grade:grade, order:order}
       setSelectedClass(updatedClass)
       navigation.navigate("Board", {version:"Class", selectedClass:updatedClass});

@@ -7,7 +7,6 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 const Stack = createStackNavigator();
 
 export default function ChatStack({ navigation, route }) {
-  // 현재 활성화된 화면 이름 가져오기
   const routeName = getFocusedRouteNameFromRoute(route);
 
   React.useLayoutEffect(() => {
@@ -19,7 +18,7 @@ export default function ChatStack({ navigation, route }) {
   }, [navigation, routeName]);
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="ChatList">
       <Stack.Screen
         name="ChatList"
         component={ChatListScreen}

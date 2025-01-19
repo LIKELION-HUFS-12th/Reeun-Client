@@ -128,7 +128,7 @@ export default function HomeScreen({navigation}) {
           <>
           { userInfo.classList.map((el, index) => {
             return(
-            <ClassEl grade={el.grade} order={el.order}grade_text={`${el.grade}학년 ${el.order}반`} key={index} navigation={navigation} setSelectedClass={setSelectedClass} selectedClass={selectedClass}></ClassEl>
+            <ClassEl grade={el.grade} order={el.order}grade_text={`${el.grade}학년 ${el.order}반`} index={index} navigation={navigation} setSelectedClass={setSelectedClass} selectedClass={selectedClass}></ClassEl>
             )
           })
             

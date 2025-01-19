@@ -6,7 +6,7 @@ import { useAnonymousAtClassStore, useAnonymousStore, useUserInfoStore } from '.
 import { useAsync } from '../../hooks/useAsync';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useNavigation } from '@react-navigation/native';
 
 const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, version, selectedClass ,setClassMember, setSchoolMember}) => {
   const {userInfo} = useUserInfoStore();
@@ -14,6 +14,7 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
   const {isAnonymousAtSchool} = useAnonymousStore();
   const {isAnonymousAtClasses} = useAnonymousAtClassStore();
   const [refresh, setRefresh] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setRefresh((prev) => !prev); // 리렌더링 트리거
@@ -31,7 +32,16 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
   }, [isAnonymousAtClasses]);
 
 
-
+  //디엠 전송화면으로 이동
+  const handleSendMessage = (member) => {
+    navigation.navigate('Chatlist', {
+      screen: 'Chat',
+      params: {
+        recipientId: member.id,
+        recipientName: member.name || `user id:${member.id}`,
+      },
+    });
+  };
 
 
   return (
@@ -67,77 +77,50 @@ const MemberModal = ({modalVisible, setModalVisible, schoolMember, classMember, 
                 </TouchableOpacity>
               </View>)
             : <View></View>}
-            <ScrollView>
-
-                
-              
-              { version === "School" ? (
-                
-                schoolMember.map((el, index) => (
-                  el.id === userInfo.id ? null : (
-                    
+              {/* 유저 목록 */}
+              <ScrollView style={{ display:'flex', maxHeight: Dimensions.get('screen').height * 0.5, maxWidth: Dimensions.get('screen').width * 0.5, marginLeft: 170, }}
+                contentContainerStyle={{alignItems: 'flex-end', }}>
+                {(version === 'School' ? schoolMember : classMember).map(
+                  (el, index) =>
+                    el.id === userInfo.id ? null : (
                       <View
                         key={index}
                         style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          position: "absolute",
-                          left: 170,
-                          top: 200 + index * 30,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginBottom: 15,
                         }}
                       >
-                        <Text style={{ fontSize: 17, fontWeight: "700", flex: 1 }}>
+                        <Text
+                          style={{
+                            fontSize: 17,
+                            fontWeight: '700',
+                            flex: 1,
+                          }}
+                        >
                           {el.name ? el.name : `user id:${el.id}`}
                         </Text>
-                        <TouchableOpacity style={{ position: "absolute", left: 130 }}>
+                        <TouchableOpacity
+                          onPress={() => handleSendMessage(el)}
+                          style={{
+                            padding: 10,
+                            backgroundColor: '#f0f0f0',
+                            borderRadius: 5,
+                          }}
+                        >
                           <Image
-                            source={require("../../../assets/dm.png")}
-                            style={{ width: 22, height: 22 }}
+                            source={require('../../../assets/dm.png')}
+                            style={{
+                              width: 22,
+                              height: 22,
+                            }}
                           />
                         </TouchableOpacity>
                       </View>
-                    
-                  )
-                ))
-              ) : (
-                
-                classMember.map((el, index) => (
-                  el.id === userInfo.id ? null : (
-                    
-                    <View
-                      key={index}
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "absolute",
-                        left: 170,
-                        top: 200 + index * 30,
-                      }}
-                    >
-                      <Text style={{ fontSize: 17, fontWeight: "700",}}>
-                        {el.name ? el.name : `user id:${el.id}`}
-                      </Text>
-                      <TouchableOpacity style={{ position: "absolute", left:140}}>
-                        <Image
-                          source={require("../../../assets/dm.png")}
-                          style={{ width: 22, height: 22 }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    
-                  )
-                ))
-              )}
+                    )
+                )}
               </ScrollView>
-            
-         <></>
-        
-        
-          
+         <></> 
       </Modal>
     </SafeAreaView>
   )
