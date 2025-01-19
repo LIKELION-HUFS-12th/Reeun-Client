@@ -65,7 +65,7 @@ export default function BoardScreen({route ,navigation}) {
   useFocusEffect(
     useCallback(() => {
       if(version==="School"){
-        getSchoolBoardPosts();
+        getSchoolBoardPosts(setPostList);
         getSchoolMember(setSchoolMember);
         console.log("borad",schoolMember)
         console.log(schoolMember.length)

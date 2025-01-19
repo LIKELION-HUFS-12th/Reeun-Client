@@ -37,8 +37,26 @@ export default function WritingScreen({ route}) {
     }
   }
 
+  const handleWritingSchool = async() => {
+    try {
+      const response = await axios.post("https://reeun.store/board/",{
+        title:title,
+        body:content
+      },{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      navigation.goBack()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     console.log(selectedClass);
+    console.log(version);
   }, [])
   
 
@@ -58,7 +76,7 @@ export default function WritingScreen({ route}) {
                 </CloseButton>
                 <TitleText>글쓰기</TitleText>
               </TopRow>
-              <DoneButton onPress={() => handleWritingClass()} activeOpacity={0.7}>
+              <DoneButton onPress={() => version === "School" ? handleWritingSchool() : handleWritingClass()} activeOpacity={0.7}>
                 <DoneText>완료</DoneText>
               </DoneButton>
             </Header>

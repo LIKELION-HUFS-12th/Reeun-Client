@@ -144,7 +144,7 @@ export const useAsync = () => {
     }
   }
 
-  const getSchoolBoardPosts = async() => {
+  const getSchoolBoardPosts = async(setPostList) => {
     try {
       const response = await axios.get('https://reeun.store/board/',{
         headers:{
@@ -152,6 +152,7 @@ export const useAsync = () => {
         }
       })
       console.log(response.data);
+      setPostList(response.data.data);
     } catch (error) {
       console.log(error.message );
       console.log(user);
