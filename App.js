@@ -20,13 +20,16 @@ import SetSchool from './src/ui/screens/SetSchool';
 import SetClass from './src/ui/screens/SetClass';
 import BoardScreen from './src/ui/screens/Board';
 import WritingScreen from './src/ui/screens/Writing';
+import { useUserStore } from './src/logic/store/user';
 
 const Stack = createNativeStackNavigator();
 
 // Stack Navigator
 function AppNavigator() {
+  const {user} = useUserStore();
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName={user ? "Tabs" : "Login"}>
       <Stack.Screen name="Tabs" component={TabNavigator} options={{headerShown:false}}/>
       {/* 다른 화면 추가 가능 */}
       <Stack.Screen name='Login' component={Login_Home} options={{headerShown:false}}/>

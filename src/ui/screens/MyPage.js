@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import ClassEl from '../components/ClassEl'
-import { useUserInfoStore, useUserStore } from '../../logic/store/user'
+import { useAnonymousStore, useUserInfoStore, useUserStore } from '../../logic/store/user'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAsync } from '../../hooks/useAsync'
@@ -22,16 +22,18 @@ const MyPage = ({navigation}) => {
   const [deletePassword, setDeletePassword] = useState("");
   const [nickname,setNickname] = useState("");
   const [editProfile, setEditProfile] = useState(false);
+  const height = Dimensions.get('screen').height;
+  const width= Dimensions.get('screen').width;
 
   useFocusEffect(
     useCallback(() => {
       getUserInfo();
-    },[user])
+    },[user, editProfile])
   )
   
 
   return (
-    <SafeAreaView style={{maxWidth:"350px", backgroundColor:"white", position:"relative"}}>
+    <SafeAreaView style={{width:width, height:height, backgroundColor:"white", position:"relative"}}>
       
       <MyPageHeader>
         <TouchableOpacity>
@@ -61,7 +63,7 @@ const MyPage = ({navigation}) => {
           :<TouchableOpacity><Text style={{fontSize:17, color:"#6c6c6c", fontWeight:'bold', textDecorationLine:'underline'}}>등록하기</Text></TouchableOpacity>}</Text>
           </UserSchool>
       </ProfileContents>
-      <ViewMyActivity>
+      {/* <ViewMyActivity>
         <MyPostButton >
           <Image source={require("../../../assets/post_icon.png")}/>
           <Text style={{color:"#757373"}}>내가 쓴 게시물</Text>
@@ -70,7 +72,7 @@ const MyPage = ({navigation}) => {
           <Image source={require("../../../assets/comment_icon.png")} />
           <Text style={{color:"#757373"}}>내가 쓴 댓글</Text>
         </MyCommentButton>
-      </ViewMyActivity>
+      </ViewMyActivity> */}
       <ViewMyClass>
         <Text style={{fontSize:'20', fontWeight:"700", marginLeft:"30", marginBottom:"15"}}>나의 반</Text>
         
@@ -94,16 +96,16 @@ const MyPage = ({navigation}) => {
           </ScrollView>
         
       </ViewMyClass>
-      <View style={{ marginTop:user?'50':'90'}}>
-      {user ? <LogOutButton onPress={() => {goToLogoutAlert(handleLogOut)}}>
-        <LogOutText>로그아웃</LogOutText>
-      </LogOutButton>
-      :
-      <></>}
-      
-      <CancleButton onPress={() => user ? goToDeleteAlert(handleDelete) : navigation.navigate('Login')}>
-        <CancleText>{user ? "탈퇴하기" : "로그인하기"}</CancleText>
-      </CancleButton>
+      <View style={{ marginTop:user?'50':'90', position:'absolute', bottom:100}}>
+        {user ? <LogOutButton onPress={() => {goToLogoutAlert(handleLogOut)}}>
+          <LogOutText>로그아웃</LogOutText>
+        </LogOutButton>
+        :
+        <></>}
+        
+        <CancleButton onPress={() => user ? goToDeleteAlert(handleDelete) : navigation.navigate('Login')}>
+          <CancleText>{user ? "탈퇴하기" : "로그인하기"}</CancleText>
+        </CancleButton>
       </View>
       <SafeAreaView>
         
@@ -228,6 +230,8 @@ const ClassList = styled.View`
 const LogOutButton = styled.TouchableOpacity`
   margin-left:30px;
   padding:10px 0;
+  margin-bottom:40px;
+  
 `
 
 const LogOutText = styled.Text`
@@ -237,7 +241,9 @@ const LogOutText = styled.Text`
 const CancleButton = styled.TouchableOpacity`
   margin-left:30px;
   margin-bottom:20px;
-  
+  position:absolute;
+  bottom:0;
+  margin-top:0px;
 `
 
 const CancleText = styled.Text`

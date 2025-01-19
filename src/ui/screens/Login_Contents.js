@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, KeyboardAvoidingView, Platform, Text, View } from 'react-native'
+import { Dimensions, Image, KeyboardAvoidingView, Platform, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import logo from '../../../assets/logo.png'
@@ -9,19 +9,20 @@ import { useUserStore } from '../../logic/store/user'
 import { useAsync } from '../../hooks/useAsync'
 import { useLogIn } from '../../hooks/useLogIn'
 
+const height = Dimensions.get('screen').height;
 
 const Login_Contents = ({navigation}) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const {handleLogIn} = useAsync();
   const {handleId, handlePassword} = useLogIn();
-
+  
   
 
   return (
     <>
     
-    <SafeAreaView style={{backgroundColor:'white'}}>
+    <SafeAreaView style={{backgroundColor:'white', height:height}}>
     
       <View style={{margin:"auto"}}>
       <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={70}>
