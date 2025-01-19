@@ -18,7 +18,7 @@ export default function ChatStack({ navigation, route }) {
   }, [navigation, routeName]);
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="ChatList">
       <Stack.Screen
         name="ChatList"
         component={ChatListScreen}
