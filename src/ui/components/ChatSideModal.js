@@ -5,10 +5,12 @@ import axios from 'axios';
 import { useUserStore } from '../../logic/store/user';
 import BASE_URL from '../../logic/api/BaseUrl';
 import useParticipant from '../../logic/hooks/useParticipant';
+import useExitChat from '../../logic/hooks/useExitChat';
 
 export default function ChatSideModal({ isVisible, onClose, otherId }) {
   const slideAnim = useRef(new Animated.Value(300)).current;
-  const { participant, loading } = useParticipant(otherId); // 훅 사용
+  const { participant, loading } = useParticipant(otherId); // 참여자 정보
+  const { handleExitChat, loading: exitLoading } = useExitChat(); // 쪽지 나가기
   const token = useUserStore.getState().user; // 토큰 가져오기
 
   // 슬라이드 애니메이션 처리
@@ -27,28 +29,6 @@ export default function ChatSideModal({ isVisible, onClose, otherId }) {
       }).start();
     }
   }, [isVisible]);
-
-  // 쪽지 나가기 API 호출
-  const handleExitChat = async () => {
-    try {
-      const response = await axios.post(
-        `${BASE_URL}message/exitMessage`,
-        { otherId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status === 201) {
-        Alert.alert('성공', '쪽지를 나갔습니다.');
-        onClose();
-      } else {
-        throw new Error(response.data?.message || '쪽지 나가기 실패');
-      }
-    } catch (error) {
-      Alert.alert('오류', error.message || '쪽지 나가기 중 오류가 발생했습니다.');
-    }
-  };
 
   return (
     isVisible && (
@@ -87,8 +67,11 @@ export default function ChatSideModal({ isVisible, onClose, otherId }) {
               </ParticipantSection>
             </ModalContent>
             <Footer>
-              <FooterButton onPress={handleExitChat}>
-                <FooterTextRed>나가기</FooterTextRed>
+            <FooterButton
+                onPress={() => handleExitChat(otherId, onClose)} // 쪽지 나가기 호출
+                disabled={exitLoading} // 로딩 중 비활성화
+              >              
+              <FooterTextRed>나가기</FooterTextRed>
               </FooterButton>
             </Footer>
           </AnimatedModal>
