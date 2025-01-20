@@ -39,7 +39,12 @@ export default function ChatListScreen({ navigation }) {
           {chatRooms.map((room) => (
             <TouchableOpacity
               key={room.id}
-              onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.name })}
+              onPress={() => {
+                navigation.navigate('Chat', {
+                  recipientId: room.id, // `room.id`를 `recipientId`로 전달
+                  recipientName: room.name || 'Unnamed Room', // `room.name`을 `recipientName`으로 전달
+                });
+              }}
             >
               <ChatRoom>
                 <Avatar source={require('../../../assets/comment_profile.png')} />

@@ -23,7 +23,7 @@ export const fetchChatRooms = async () => {
       // name 필드가 null인 경우 기본값 설정
       chatRooms = chatRooms.map(room => ({
         id: room.id,
-        name: room.name || '채팅방', // 기본값 설정
+        name: room.name || '쪽지', // 기본값 설정
       }));
 
       return chatRooms;
