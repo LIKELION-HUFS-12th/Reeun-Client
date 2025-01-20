@@ -15,15 +15,16 @@ const useFetchChatRooms = () => {
         setError(null);
 
         console.log('Fetching chat rooms...'); // 디버깅 로그
-        const data = await fetchChatRooms();
-        console.log('Fetched data:', data); // 응답 데이터 확인
+        const response = await fetchChatRooms();
+        console.log('Fetched chat rooms:', response); // 응답 데이터 확인
 
         if (isMounted) {
-          if (Array.isArray(data)) {
-            setChatRooms(data); // 데이터가 배열일 경우에만 설정
-          } else {
-            throw new Error('Unexpected data format'); // 데이터 형식이 예상과 다를 경우
-          }
+          // 데이터 매핑 및 name 기본값 설정
+          const formattedRooms = response.map(chat => ({
+            id: chat.id,
+            name: chat.name || '채팅방', // 기본값 처리
+          }));
+          setChatRooms(formattedRooms);
         }
       } catch (err) {
         console.error('Error fetching chat rooms:', err.message); // 에러 로그 출력

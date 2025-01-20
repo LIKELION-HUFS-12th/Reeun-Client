@@ -76,3 +76,21 @@ export const sendMessage = async (receiverId, content) => {
     }
   }
 };
+
+// 쪽지 나가기
+export const exitChat = async (otherId) => {
+  const token = useUserStore.getState().user; // 토큰 가져오기
+
+  const response = await axios.post(
+    `${BASE_URL}message/exitMessage`,
+    { otherId },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  if (response.status === 201) {
+    return true;
+  }
+  throw new Error(response.data?.message || '쪽지 나가기 실패');
+};

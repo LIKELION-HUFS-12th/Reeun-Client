@@ -1,4 +1,3 @@
-// 채팅방 내 대화목록
 import React from 'react';
 import styled from 'styled-components/native';
 import { FlatList } from 'react-native';
@@ -16,6 +15,10 @@ export default function ChatList({ messages }) {
             <TimeText>{item.createDate}</TimeText>
           </ChatItem>
         )}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }} // 스크롤 가능한 영역 확보
+        keyboardShouldPersistTaps="handled" // 키보드 활성화 상태에서도 스크롤 가능
+        showsVerticalScrollIndicator={false} // 스크롤바 숨김
+        inverted // 메시지를 아래에서 위로 렌더링
       />
     </ChatListContainer>
   );
@@ -27,7 +30,8 @@ const ChatListContainer = styled.View`
 `;
 
 const ChatItem = styled.View`
-  background-color: ${(props) => (props.isMine ? props.theme.mineBackground || '#F4F4F4' : props.theme.otherBackground || '#FFFFFF')};
+  background-color: ${(props) =>
+    props.isMine ? props.theme.mineBackground || '#F4F4F4' : props.theme.otherBackground || '#FFFFFF'};
   padding: 12px 18px;
   margin: 15px 5px 0px 5px;
   border-radius: 20px;
