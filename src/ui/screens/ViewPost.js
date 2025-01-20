@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import CommentEl from '../components/CommentEl'
@@ -76,6 +76,56 @@ const ViewPost = ({route}) => {
       console.log(error)
     }
   }
+
+  const handleSchoolPostDelete = async() => {
+    try {
+      const response = await axios.delete(`https://reeun.store/board/${el.id}/`,{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleClassPostDelete = async() => {
+    try {
+      const response = await axios.delete(`https://reeun.store/classboard/delete/`,{
+        headers: {
+          Authorization: `Bearer ${user}`,
+        },
+        data: {
+          classBoardId: el.id, // 요청 본문에 전달할 데이터
+        },
+      })
+      console.log(response.data);
+      navigation.goBack()
+    } catch (error) {
+      console.log(error)
+      console.log(el.id)
+    }
+  }
+
+  const handleDeleteAlert = (handleDeleteFunction) => {
+    
+      Alert.alert("게시물을 삭제 하시겠어요?", "", [
+        {
+          //style을 통해 알러트가 닫힘
+          style: "cancel",
+          text: "아니요"
+        },
+        {
+          text: "네",
+          //버튼을 누르면 동작할 로직을 직접 적어줄 수도 있음
+          onPress: () => handleDeleteFunction(),
+        }
+        //버튼관리
+      ])
+    
+  }
   
 
   return (
@@ -100,8 +150,8 @@ const ViewPost = ({route}) => {
           <OwnerName >{el.user.name ? el.user.name : el.user.id}</OwnerName>
           <UpLoadDate>{el.created_at}</UpLoadDate>
         </View>
-        <TouchableOpacity style={{marginRight:"25"}}> 
-          <Image source={require("../../../assets/add_icon.png")} />
+        <TouchableOpacity style={{marginRight:"25", width:25, height:25}} onPress={() => version === "School" ? handleDeleteAlert(handleSchoolPostDelete): handleDeleteAlert(handleClassPostDelete)}> 
+          <Image source={require("../../../assets/delete.png")} style={{width:20, height:20}}></Image>
         </TouchableOpacity>
       </OwnerProfile>
       <PostContent>
