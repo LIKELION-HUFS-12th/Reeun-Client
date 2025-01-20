@@ -61,7 +61,7 @@ export default function ChatSideModal({ isVisible, onClose, otherId }) {
                     <ParticipantImage
                       source={require('../../../assets/comment_profile.png')}
                     />
-                    <ParticipantText>참여자 정보를 불러오는 중...</ParticipantText>
+                    <ParticipantText>익명</ParticipantText>
                   </Participant>
                 )}
               </ParticipantSection>
