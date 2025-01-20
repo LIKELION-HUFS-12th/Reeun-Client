@@ -35,7 +35,17 @@ const ViewPost = ({route}) => {
         }
       })
       console.log(response.data);
-      setIsComplete(true);
+      const newComment = {
+        user: [{ name: user.name }], // 사용자의 이름 또는 ID
+        comment: comment,
+        created_at: new Date().toISOString(), // 현재 시간
+      };
+      el.comments = [...el.comments, newComment]; // 기존 댓글에 새 댓글 추가
+      setComment(""); // 입력 필드 초기화
+      // setIsComplete((prev) => !prev);
+      console.log("el comments",el.comments)
+      
+      
     } catch (error) {
       console.log(error)
     }
@@ -52,7 +62,16 @@ const ViewPost = ({route}) => {
         }
       })
       console.log(response.data);
-      setIsComplete((prev) => !prev);
+      
+      const newComment = {
+        user: [{ name: user.name }], // 사용자의 이름 또는 ID
+        comment: comment,
+        created_at: new Date().toISOString(), // 현재 시간
+      };
+      el.comments = [...el.comments, newComment]; // 기존 댓글에 새 댓글 추가
+      setComment(""); // 입력 필드 초기화
+      // setIsComplete((prev) => !prev);
+      console.log(el.comments)
     } catch (error) {
       console.log(error)
     }
@@ -99,7 +118,7 @@ const ViewPost = ({route}) => {
         {el.comments.map((el, index) => {
           return(
             <View key={index}>
-              <CommentEl user_name={el.user[0]} comment={el.comment} date={el.created_at} index={index}/>
+              <CommentEl user_name={el.user[0]?.name || '익명'} comment={el.comment} date={el.created_at.slice(0,10)} index={index}/>
             </View>
           )
         })}
@@ -198,7 +217,7 @@ const ContentText = styled.Text`
 `
 
 const CommentsBody = styled.View`
-  min-height:400px;
+  height:400px;
 `
 
 const CommentCount = styled.View`
