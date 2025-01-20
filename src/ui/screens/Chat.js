@@ -81,7 +81,7 @@ const Screen = styled.View`
 const Content = styled.View`
   flex: 1;
   width: 100%;
-  padding-bottom: 60px;
+  padding-bottom:5px;
 `;
 
 const ChatInputContainer = styled.View`
