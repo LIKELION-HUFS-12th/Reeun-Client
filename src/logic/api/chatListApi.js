@@ -6,19 +6,26 @@ export const fetchChatRooms = async () => {
   try {
     const token = useUserStore.getState().user;
 
-    const response = await axios.get(`${BASE_URL}member/`, {
+    const response = await axios.get(`${BASE_URL}message/`, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
 
     console.log('API Response:', response.data);
 
     if (response.status === 200) {
-      const chatRooms = response.data.data;
+      let chatRooms = response.data.data;
       console.log('Extracted ChatRooms:', chatRooms);
 
       if (!Array.isArray(chatRooms) || chatRooms.length === 0) {
         throw new Error('채팅방이 없습니다. 새로운 대화를 시작해보세요.');
       }
+
+      // name 필드가 null인 경우 기본값 설정
+      chatRooms = chatRooms.map(room => ({
+        id: room.id,
+        name: room.name || '쪽지', // 기본값 설정
+      }));
+
       return chatRooms;
     }
 

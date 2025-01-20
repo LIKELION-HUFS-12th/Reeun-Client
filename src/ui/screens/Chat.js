@@ -15,9 +15,6 @@ export default function Chat() {
 
   // 안전하게 파라미터 받기
   const { recipientId, recipientName } = route.params || {}; // 파라미터가 없으면 빈 객체로 처리
-  if (!recipientId) {
-    console.error('Recipient ID is missing');
-  }
 
   const { getToken } = useAsync(); // useAsync에서 토큰 가져오기
   const [token, setToken] = useState(null);
@@ -48,7 +45,7 @@ export default function Chat() {
           <AppTopBar
             title={recipientName || '채팅'} // 전달된 recipientName 또는 기본값 사용
             iconSource={require('../../../assets/arrow_back_black.png')}
-            onIconPress={() => navigation.goBack()}
+            onIconPress={() => navigation.navigate('Chatlist', { screen: 'ChatList' })}
             rightIconSource="ellipsis-vertical"
             onRightIconPress={toggleModal}
           />
@@ -84,7 +81,7 @@ const Screen = styled.View`
 const Content = styled.View`
   flex: 1;
   width: 100%;
-  padding-bottom: 60px;
+  padding-bottom:5px;
 `;
 
 const ChatInputContainer = styled.View`
