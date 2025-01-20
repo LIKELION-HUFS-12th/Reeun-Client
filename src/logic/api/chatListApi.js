@@ -38,6 +38,6 @@ export const fetchChatRooms = async () => {
         data: error.response.data,
       });
     }
-    throw new Error('데이터를 불러오는 중 문제가 발생했습니다.');
+    throw new Error('채팅방이 없습니다. 새로운 대화를 시작해보세요.');
   }
 };
