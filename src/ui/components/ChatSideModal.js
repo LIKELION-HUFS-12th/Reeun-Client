@@ -1,44 +1,47 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import { Animated, TouchableWithoutFeedback, Alert } from 'react-native';
-import axios from 'axios'; 
-import { useUserStore } from '../../logic/store/user'; 
+import axios from 'axios';
+import { useUserStore } from '../../logic/store/user';
 import BASE_URL from '../../logic/api/BaseUrl';
+import useParticipant from '../../logic/hooks/useParticipant';
 
 export default function ChatSideModal({ isVisible, onClose, otherId }) {
   const slideAnim = useRef(new Animated.Value(300)).current;
+  const { participant, loading } = useParticipant(otherId); // 훅 사용
   const token = useUserStore.getState().user; // 토큰 가져오기
 
+  // 슬라이드 애니메이션 처리
   useEffect(() => {
     if (isVisible) {
       Animated.timing(slideAnim, {
-        toValue: 0, // 화면 안으로 슬라이드
+        toValue: 0,
         duration: 300,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(slideAnim, {
-        toValue: 300, // 화면 밖으로 이동
+        toValue: 300,
         duration: 300,
         useNativeDriver: true,
       }).start();
     }
-  }, [isVisible, slideAnim]);
+  }, [isVisible]);
 
   // 쪽지 나가기 API 호출
   const handleExitChat = async () => {
     try {
       const response = await axios.post(
-        `${BASE_URL}message/exitMessage`, // API 엔드포인트
-        { otherId }, // 요청 바디
+        `${BASE_URL}message/exitMessage`,
+        { otherId },
         {
-          headers: { Authorization: `Bearer ${token}` }, // 헤더에 토큰 추가
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (response.status === 201) {
         Alert.alert('성공', '쪽지를 나갔습니다.');
-        onClose(); // 모달 닫기
+        onClose();
       } else {
         throw new Error(response.data?.message || '쪽지 나가기 실패');
       }
@@ -64,14 +67,23 @@ export default function ChatSideModal({ isVisible, onClose, otherId }) {
                   <ParticipantImage
                     source={require('../../../assets/owner_profile.png')}
                   />
-                  <ParticipantText>나 (익명)</ParticipantText>
+                  <ParticipantText>나</ParticipantText>
                 </Participant>
-                <Participant>
+                {participant ? (
+                  <Participant>
                   <ParticipantImage
                     source={require('../../../assets/comment_profile.png')}
                   />
-                  <ParticipantText>익명 (글쓴이)</ParticipantText>
-                </Participant>
+                    <ParticipantText>{participant.nickname}</ParticipantText>
+                  </Participant>
+                ) : (
+                  <Participant>
+                    <ParticipantImage
+                      source={require('../../../assets/comment_profile.png')}
+                    />
+                    <ParticipantText>참여자 정보를 불러오는 중...</ParticipantText>
+                  </Participant>
+                )}
               </ParticipantSection>
             </ModalContent>
             <Footer>
@@ -86,7 +98,7 @@ export default function ChatSideModal({ isVisible, onClose, otherId }) {
   );
 }
 
-// Styled Components
+// Styled Components (기존 스타일 유지)
 const ModalOverlay = styled.View`
   position: absolute;
   top: 0;
@@ -177,11 +189,6 @@ const FooterButton = styled.TouchableOpacity`
   background-color: white;
   padding: 10px 20px;
   border-radius: 5px;
-`;
-
-const FooterText = styled.Text`
-  color: ${(props) => props.theme.text || '#000000'};
-  font-size: 14px;
 `;
 
 const FooterTextRed = styled.Text`
