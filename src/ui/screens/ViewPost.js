@@ -28,7 +28,7 @@ const ViewPost = ({route}) => {
         <HeaderText>
           <Text style={{fontSize:"16"}}>{version === "School" ? "전체 커뮤니티" : "학급 커뮤니티"}</Text>
           {version === "School" ?
-          <Text style={{fontSize:"20"}}><Text style={{color:"#FB5E3D", fontWeight:"900"}}>리운 </Text>초등학교{"(2008)"}</Text>
+          <Text style={{fontSize:"20"}}><Text style={{color:"#FB5E3D", fontWeight:"900"}}>{el.school_name} </Text>초등학교{`(${el.admission_year})`}</Text>
           :
           <Text style={{fontSize:"20"}}><Text style={{color:"#FB5E3D", fontWeight:"900"}}>{`${el.grade}학년 ${el.order}반`} </Text>{`(${el.admission_year})`}</Text>
 
@@ -95,6 +95,7 @@ const PostHeader = styled.View`
   position:relative;
   align-items:center;
   justify-content:center;
+  margin-top:20px;
 `
 
 const HeaderText = styled.View`
