@@ -1,22 +1,81 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled from 'styled-components/native'
 import CommentEl from '../components/CommentEl'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios';
+import { useUserStore } from '../../logic/store/user'
+import { useAsync } from '../../hooks/useAsync'
 
 const ViewPost = ({route}) => {
-  const comment_user = ["김00", "이00"];
-  const comment = ["뭐야ㅋㅋㅋㅋ 너 누군데??", "누구게~?"];
-  const date = ["2024.09.04", "2024.09.05"]
   const height = Dimensions.get('screen').height;
-  const {el,version} = route.params;
+  const {el,version, postList, setPostList} = route.params;
   const navigation = useNavigation();
+  const [comment, setComment] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+  const {user} = useUserStore();
+  const {getSchoolBoardPosts, getClassBoardPosts} = useAsync();
 
   useEffect(() => {
-    console.log(el)
-  }, [])
+    console.log(el);
+    version === "School" ? getSchoolBoardPosts(setPostList) : getClassBoardPosts(setPostList);
+
+
+  }, [isComplete, el, postList])
+
+  const handleCommentSchool = async() => {
+    try {
+      const response = await axios.post(`https://reeun.store/board/${el.id}/comments/`,{
+        comment:comment
+      },{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      const newComment = {
+        user: [{ name: user.name }], // 사용자의 이름 또는 ID
+        comment: comment,
+        created_at: new Date().toISOString(), // 현재 시간
+      };
+      el.comments = [...el.comments, newComment]; // 기존 댓글에 새 댓글 추가
+      setComment(""); // 입력 필드 초기화
+      // setIsComplete((prev) => !prev);
+      console.log("el comments",el.comments)
+      
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleCommentClass = async() => {
+    try {
+      const response = await axios.post(`https://reeun.store/classboard/comment/write/`,{
+        classBoardId:el.id,
+        comment:comment
+      },{
+        headers:{
+          Authorization:`Bearer ${user}`
+        }
+      })
+      console.log(response.data);
+      
+      const newComment = {
+        user: [{ name: user.name }], // 사용자의 이름 또는 ID
+        comment: comment,
+        created_at: new Date().toISOString(), // 현재 시간
+      };
+      el.comments = [...el.comments, newComment]; // 기존 댓글에 새 댓글 추가
+      setComment(""); // 입력 필드 초기화
+      // setIsComplete((prev) => !prev);
+      console.log(el.comments)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
 
   return (
@@ -58,7 +117,9 @@ const ViewPost = ({route}) => {
         <ScrollView>
         {el.comments.map((el, index) => {
           return(
-              <CommentEl user_name={el} comment={comment[index]} date={date[index] } index={index}/>
+            <View key={index}>
+              <CommentEl user_name={el.user[0]?.name || '익명'} comment={el.comment} date={el.created_at.slice(0,10)} index={index}/>
+            </View>
           )
         })}
         </ScrollView>
@@ -66,7 +127,7 @@ const ViewPost = ({route}) => {
       </CommentsBody>
       
       <InputBody>
-        <AnonymityCheck>
+        {/* <AnonymityCheck>
         <BouncyCheckbox
           size={25}
           fillColor="#F3F0F0"
@@ -77,11 +138,19 @@ const ViewPost = ({route}) => {
           onPress={(isChecked) => {}}
           
         />
-        </AnonymityCheck>
+        </AnonymityCheck> */}
         <CommentInput
           placeholder="댓글을 입력하세요"
           placeholderTextColor="#898989"
+          value={comment}
+          onChange={(e) => setComment(e.nativeEvent.text)}
         />
+        <TouchableOpacity style={{width:60, backgroundColor:"#FB5E3D", paddingVertical:20, borderRadius:15, display:'flex', justifyContent:'center', alignItems:'center'}}
+          onPress={() => {version === "School" ? handleCommentSchool() : handleCommentClass(); setIsComplete(true);}}
+        >
+        
+          <Text style={{fontWeight:700, color:"white"}}>입력</Text>
+        </TouchableOpacity>
       </InputBody>
     </SafeAreaView>
   )
@@ -148,7 +217,7 @@ const ContentText = styled.Text`
 `
 
 const CommentsBody = styled.View`
-  min-height:400px;
+  height:400px;
 `
 
 const CommentCount = styled.View`
@@ -162,6 +231,11 @@ const InputBody = styled.View`
   display:flex;
   flex-direction:row;
   align-items:center;
+  justify-content:center;
+  gap:10px;
+  position:absolute;
+  bottom:30px;
+  left:20px;
 `
 
 
