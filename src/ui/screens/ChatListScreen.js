@@ -39,13 +39,12 @@ export default function ChatListScreen({ navigation }) {
           {chatRooms.map((room) => (
             <TouchableOpacity
               key={room.id}
-              onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.title })}
+              onPress={() => navigation.navigate('Chat', { roomId: room.id, title: room.name })}
             >
               <ChatRoom>
                 <Avatar source={require('../../../assets/comment_profile.png')} />
                 <ChatInfo>
-                  <ChatTitle>{room.title}</ChatTitle>
-                  <ChatDescription>{room.description}</ChatDescription>
+                  <ChatTitle>{room.name}</ChatTitle>
                 </ChatInfo>
               </ChatRoom>
             </TouchableOpacity>
@@ -107,11 +106,6 @@ const ChatTitle = styled.Text`
   font-size: 16px;
   font-weight: bold;
   color: #000000;
-`;
-
-const ChatDescription = styled.Text`
-  font-size: 14px;
-  color: #666666;
 `;
 
 const LoadingContainer = styled.View`

@@ -15,9 +15,6 @@ export default function Chat() {
 
   // 안전하게 파라미터 받기
   const { recipientId, recipientName } = route.params || {}; // 파라미터가 없으면 빈 객체로 처리
-  if (!recipientId) {
-    console.error('Recipient ID is missing');
-  }
 
   const { getToken } = useAsync(); // useAsync에서 토큰 가져오기
   const [token, setToken] = useState(null);

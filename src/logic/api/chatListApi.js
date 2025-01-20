@@ -13,12 +13,19 @@ export const fetchChatRooms = async () => {
     console.log('API Response:', response.data);
 
     if (response.status === 200) {
-      const chatRooms = response.data.data;
+      let chatRooms = response.data.data;
       console.log('Extracted ChatRooms:', chatRooms);
 
       if (!Array.isArray(chatRooms) || chatRooms.length === 0) {
         throw new Error('채팅방이 없습니다. 새로운 대화를 시작해보세요.');
       }
+
+      // name 필드가 null인 경우 기본값 설정
+      chatRooms = chatRooms.map(room => ({
+        id: room.id,
+        name: room.name || '채팅방', // 기본값 설정
+      }));
+
       return chatRooms;
     }
 
